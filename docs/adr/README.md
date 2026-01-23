@@ -5,4 +5,4 @@ Architecture Decision Records (ADRs) are immutable once accepted.
 Rules:
 - Accepted ADRs do not change
 - If a decision changes, write a new ADR that supersedes the old one
-- ADRs should link to related docs in /docs/_project and /docs/blueprint
+- ADRs should link to related docs in /docs/__project and /docs/blueprint
