@@ -1,0 +1,23 @@
+{
+  "name": "github-ts-repo-template",
+  "version": "1.0.0",
+  "description": "Template for creating github repositories",
+  "homepage": "https://github.com/corydm92/github-ts-repo-template#readme",
+  "bugs": {
+    "url": "https://github.com/corydm92/github-ts-repo-template/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/corydm92/github-ts-repo-template.git"
+  },
+  "license": "ISC",
+  "author": "Cory Morrissey",
+  "type": "module",
+  "main": "index.ts",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "test"
+  }
+}
