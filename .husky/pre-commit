@@ -1,2 +1,5 @@
 #!/usr/bin/env sh
+pnpm format
+pnpm lint
+pnpm type-check
 pnpm test

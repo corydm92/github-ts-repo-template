@@ -1,0 +1,37 @@
+import js from '@eslint/js';
+import globals from 'globals';
+import importPlugin from 'eslint-plugin-import';
+import tseslint from 'typescript-eslint';
+
+export default [
+  {
+    ignores: [
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      'node_modules/**',
+
+      // Tooling files: keep linting focused on app code
+      'commitlint.config.cjs',
+      'commitlint.config.formatter.mjs',
+    ],
+  },
+
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  {
+    files: ['**/*.{ts,tsx,js,mjs,cjs}'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.es2023 },
+    },
+    plugins: { import: importPlugin },
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' },
+      ],
+    },
+  },
+];
