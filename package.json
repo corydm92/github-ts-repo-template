@@ -13,7 +13,6 @@
   "license": "ISC",
   "author": "Cory Morrissey",
   "type": "module",
-  "main": "index.ts",
   "directories": {
     "doc": "docs"
   },
