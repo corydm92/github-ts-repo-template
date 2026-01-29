@@ -19,8 +19,8 @@ Deployment standards for this section.
 - Vercel builds in its own environment; this workflow triggers deployments only.
 
 ## Docker CD (services)
-- Build happens only on develop.
-- Image is tagged with short SHA and promoted to staging/prod without rebuild.
+- Build happens per environment.
+- Image is rebuilt using the same inputs for dev, staging, and prod.
 - Required secrets: GITHUB_TOKEN (GHCR) or registry-specific credentials.
 
 ## npm CD (libraries)
@@ -30,6 +30,6 @@ Deployment standards for this section.
 - Required secrets: NPM_TOKEN.
 
 ## Standardization rules
-- Do not rebuild artifacts between staging and prod.
+- Rebuild per environment using deterministic inputs.
 - Prefer tag-based releases for prod.
 - Keep audits outside CI by default.

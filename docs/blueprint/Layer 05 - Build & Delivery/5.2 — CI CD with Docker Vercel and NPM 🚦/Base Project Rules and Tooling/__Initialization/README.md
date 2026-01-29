@@ -5,7 +5,7 @@ How to adopt this section in a project.
 ## What to add
 - CI workflow with format, lint, type-check, test.
 - Gitflow CD workflow for your chosen deploy target (Vercel, Docker, or npm).
-- Release tooling (conventional commits + standard-version) if using tag-based releases.
+- Release tooling (conventional commits + semantic-release) if using tag-based releases.
 
 ## How to configure
 - Ensure package.json has a packageManager entry for deterministic pnpm.

@@ -1,4 +1,4 @@
-# 🚦 CI CD with Docker Vercel and NPM — Gitflow Deployment Flow
+# 🚦 CI/CD with Docker, Vercel, and npm — Gitflow Deployment Flow
 
 Updated by Cory Morrissey: 1/29/2026
 
@@ -39,14 +39,14 @@ Rule: **Only one CD path should be active** in a given project.
 6) Create a `release/*` branch from `develop`.
 7) **Staging deploy** triggers automatically from `release/*`.
 8) QA/UAT on staging.
-9) Cut a release tag (ex: `v1.2.3`) from the release commit.
+9) Run `semantic-release` to generate the release commit + `v*` tag.
 10) **Prod deploy** triggers automatically from the tag.
 11) Merge `release/*` into `main` and back-merge to `develop`.
 
 ## Notes
 
 - Vercel builds in its own environment; this workflow triggers deployments only.
-- Tag-based prod deploys keep artifacts consistent across environments.
+- Rebuild per environment and rely on deterministic inputs to avoid drift.
 
 ---
 
@@ -65,18 +65,17 @@ Rule: **Only one CD path should be active** in a given project.
 2) Commit changes using conventional commits.
 3) Open a PR into `develop` and wait for CI to pass.
 4) Merge PR into `develop`.
-5) **Build + push** triggers on `develop` only; image is tagged with short SHA.
+5) **Build + push** triggers on `develop` (dev image).
 6) Create a `release/*` branch from `develop`.
-7) **Staging deploy** pulls the same image by short SHA (no rebuild).
+7) **Staging deploy** rebuilds the image with deterministic inputs.
 8) QA/UAT on staging.
-9) Cut a release tag (ex: `v1.2.3`) from the release commit.
-10) **Prod deploy** pulls the same image by short SHA (no rebuild).
+9) Run `semantic-release` to generate the release commit + `v*` tag.
+10) **Prod deploy** rebuilds the image with deterministic inputs.
 11) Merge `release/*` into `main` and back-merge to `develop`.
 
 ## Notes
 
-- Artifacts are built once on `develop` and promoted forward.
-- Do not rebuild between staging and prod.
+- Rebuild per environment and rely on deterministic inputs to avoid drift.
 
 ---
 
@@ -99,11 +98,11 @@ Rule: **Only one CD path should be active** in a given project.
 6) Create a `release/*` branch from `develop`.
 7) **Staging publish** runs on `release/*` with dist-tag `rc`.
 8) QA/UAT on staging.
-9) Cut a release tag (ex: `v1.2.3`) from the release commit.
+9) Run `semantic-release` to generate the release commit + `v*` tag.
 10) **Prod publish** runs on tag with dist-tag `latest`.
 11) Merge `release/*` into `main` and back-merge to `develop`.
 
 ## Notes
 
-- Use conventional commits + `standard-version` to automate tagging.
+- Use conventional commits + `semantic-release` to automate tagging.
 - Adjust dist-tags if your release policy differs.

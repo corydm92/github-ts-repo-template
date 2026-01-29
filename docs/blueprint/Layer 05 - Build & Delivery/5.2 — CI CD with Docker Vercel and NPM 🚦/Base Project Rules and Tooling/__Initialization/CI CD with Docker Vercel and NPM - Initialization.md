@@ -1,4 +1,4 @@
-# CI CD with Docker Vercel and NPM — Initialization
+# CI/CD with Docker, Vercel, and npm — Initialization
 
 Updated by Cory Morrissey: 1/29/2026
 
@@ -9,7 +9,7 @@ This setup path wires **one** Gitflow CI/CD pipeline (Vercel, Docker, or npm) an
 Ship a project with:
 - CI gating on PRs and main.
 - Gitflow CD for a single deploy target.
-- One artifact promoted from dev -> staging -> prod (no rebuilds after dev).
+- Rebuild per environment using deterministic inputs to avoid drift.
 
 ## 📦 What This Step Produces
 
@@ -86,7 +86,7 @@ npm:
 
 # Step 5 — Release Tagging (Prod Gate)
 
-Use conventional commits + `standard-version` (or equivalent) to create `v*` tags.
+Use conventional commits + `semantic-release` to create the release commit + `v*` tags.
 
 This tag is the prod trigger and must point to the release commit.
 
