@@ -68,6 +68,14 @@ Examples:
 - Prefer deterministic automation over manual steps.
 - If conflicting instructions exist, clarify before changing.
 
+### Full PR Flow (Required)
+1) If on a protected branch (`main`, `develop`, `release/*`), create a new feature/bug branch before committing.
+2) Review staged and unstaged changes; group related files into separate commits.
+3) Use clear, conventional commit messages.
+4) Push the branch.
+5) Draft PR title + body + labels (ask once if details are missing).
+6) Create PR against the correct base branch (default: `develop`).
+
 ## 6) Troubleshooting
 
 - CI failures: see `docs/process/CI CD Troubleshooting.md`
