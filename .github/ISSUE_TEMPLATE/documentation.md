@@ -1,48 +1,42 @@
 ---
 name: Documentation
-about: For creating and managing docs
-title: "[DOCUMENTATION]:"
+about: Create or update documentation
+title: "[DOCS]: "
 labels: documentation
 assignees: ''
 
 ---
 
-# TO SCOPE THIS TICKET:
+# Jira Ticket: Documentation — <Short Description>
 
-[] create a descriptive title
+**Type:** Documentation  
+**Priority:** TBD  
+**Status:** Planning
 
-[] complete TBDs below
+## Summary
+Describe the documentation change and why it’s needed.
 
-[] assign epic to this ticket
+## Background / Context
+What’s missing or out of date?
 
-[] create relevant linking relations
+## Goals
+- Improve clarity/coverage
+- Keep docs consistent with current behavior
 
-[] delete this section
+## Scope
+- Files/areas to update
+- Out of scope
 
-# DELETE ME AND ABOVE!
+## Acceptance Criteria
+- Docs updated and accurate
+- Examples (if any) are correct
+- Links validated
 
+## Implementation Notes
+- Source of truth for details
+- Any dependencies or blockers
 
-
-## 🧑 Story
-
-We need to TBDTASK from TBDRESOURCE in order for TBDUSER to TBDACTION
-
- 
-
-## 🔨 Acceptance Criteria
-
-- AC1
-
-- AC2
-
- 
-
-## 📚 Resources
-
-- [PLANNINGDOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [FIGMADOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION2](WWWDOTEXAMPLEDOTCOM)
+## Verification Steps
+1) Verify content accuracy
+2) Verify examples/steps
+3) Check for broken links
