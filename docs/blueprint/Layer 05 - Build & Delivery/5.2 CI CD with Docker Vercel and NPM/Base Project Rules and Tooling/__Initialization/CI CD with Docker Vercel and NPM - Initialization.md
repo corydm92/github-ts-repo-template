@@ -45,11 +45,15 @@ Verify:
 
 # Step 2 — Choose Exactly One CD Path
 
-Pick **one** Gitflow CD workflow and remove or disable the others:
+Pick **one** Gitflow CD workflow and copy it into `.github/workflows`:
 
-- Web apps: `.github/workflows/cd-vercel-gitflow.yml`
-- Services: `.github/workflows/cd-docker-gitflow.yml`
-- Libraries: `.github/workflows/cd-npm-gitflow.yml`
+- Templates live here:
+  - `docs/blueprint/Layer 05 - Build & Delivery/5.2 CI CD with Docker Vercel and NPM/Base Project Rules and Tooling/__Initialization/workflows/`
+- Choose one:
+  - Web apps: `cd-vercel-gitflow.yml`
+  - Services: `cd-docker-gitflow.yml`
+  - Libraries: `cd-npm-gitflow.yml`
+- Copy the chosen file into `.github/workflows/`.
 
 Rule: **Only one CD path should be active** in a given project to avoid multiple deployments.
 

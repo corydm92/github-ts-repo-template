@@ -1,16 +1,21 @@
-# CI CD with Docker Vercel and NPM — Gitflow Deployment Flow
+# 🚦 CI CD with Docker Vercel and NPM — Gitflow Deployment Flow
 
 Updated by Cory Morrissey: 1/29/2026
 
 This note describes the human flow from a fix on a feature branch to production using the Gitflow pipelines in this repo.
 
-- **Path A (Web Apps)**: CI + Vercel Gitflow CD
-- **Path B (Services)**: CI + Docker Gitflow CD
-- **Path C (Libraries)**: CI + npm Gitflow CD
+- **Path A (Web Apps)**: CI + Vercel Gitflow CD 🌐
+- **Path B (Services)**: CI + Docker Gitflow CD 🐳
+- **Path C (Libraries)**: CI + npm Gitflow CD 📦
+
+Templates live in:
+`docs/blueprint/Layer 05 - Build & Delivery/5.2 CI CD with Docker Vercel and NPM/Base Project Rules and Tooling/__Initialization/workflows/`
+
+Rule: **Only one CD path should be active** in a given project.
 
 ---
 
-# Path A — Web App Deploy (Vercel Gitflow)
+# 🌐 Path A — Web App Deploy (Vercel Gitflow)
 
 ## Preconditions
 
@@ -45,7 +50,7 @@ This note describes the human flow from a fix on a feature branch to production 
 
 ---
 
-# Path B — Service Deploy (Docker Gitflow)
+# 🐳 Path B — Service Deploy (Docker Gitflow)
 
 ## Preconditions
 
@@ -75,7 +80,7 @@ This note describes the human flow from a fix on a feature branch to production 
 
 ---
 
-# Path C — Library Publish (npm Gitflow)
+# 📦 Path C — Library Publish (npm Gitflow)
 
 ## Preconditions
 
