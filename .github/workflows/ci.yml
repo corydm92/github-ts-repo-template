@@ -43,7 +43,7 @@ jobs:
         run: pnpm format:check
 
       - name: Lint
-        run: pnpm lint -- --max-warnings=0
+        run: pnpm lint --max-warnings=0
 
       - name: Type check
         run: pnpm type-check
