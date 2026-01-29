@@ -7,13 +7,14 @@ This section defines a **single, deterministic CI/CD path** for projects that de
 - Docker/containers (services)
 - npm (libraries)
 
-The goal is consistency: rebuild per environment for consistency across targets, and rely on deterministic build rules to avoid drift, with CI gates that never get skipped.
+The goal is consistency: rebuild per environment using deterministic inputs, and keep CI gates non-negotiable.
 
 ## What this section covers
 - A baseline CI gate (format, lint, type-check, test)
 - Gitflow-style CD triggers per environment
 - Deterministic rebuild rules (build per environment without drift)
 - Release tagging for production
+- Optional release automation and back-merge workflow
 
 ## Section structure
 - Base Project Rules and Tooling

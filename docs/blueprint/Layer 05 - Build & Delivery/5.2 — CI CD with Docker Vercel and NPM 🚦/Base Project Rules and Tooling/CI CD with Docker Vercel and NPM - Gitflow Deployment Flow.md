@@ -9,7 +9,7 @@ This note describes the human flow from a fix on a feature branch to production 
 - **Path C (Libraries)**: CI + npm Gitflow CD 📦
 
 Templates live in:
-`docs/blueprint/Layer 05 - Build & Delivery/5.2 CI CD with Docker Vercel and NPM/Base Project Rules and Tooling/__Initialization/workflows/`
+`docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 
 Rule: **Only one CD path should be active** in a given project.
 
@@ -36,17 +36,17 @@ Rule: **Only one CD path should be active** in a given project.
 3) Open a PR into `develop` and wait for CI to pass.
 4) Merge PR into `develop`.
 5) **Dev deploy** triggers automatically from `develop`.
-6) Create a `release/*` branch from `develop`.
+6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
 7) **Staging deploy** triggers automatically from `release/*`.
 8) QA/UAT on staging.
-9) Run `semantic-release` to generate the release commit + `v*` tag.
-10) **Prod deploy** triggers automatically from the tag.
-11) Merge `release/*` into `main` and back-merge to `develop`.
+9) Release PR into `main` waits for approval; CI runs on the PR.
+10) **Prod deploy** triggers on `v*` tag after merge to `main`.
+11) Back-merge `main` into `develop` (automated PR or manual).
 
 ## Notes
 
 - Vercel builds in its own environment; this workflow triggers deployments only.
-- Rebuild per environment and rely on deterministic inputs to avoid drift.
+- Rebuild per environment using deterministic inputs to avoid drift.
 
 ---
 
@@ -66,16 +66,15 @@ Rule: **Only one CD path should be active** in a given project.
 3) Open a PR into `develop` and wait for CI to pass.
 4) Merge PR into `develop`.
 5) **Build + push** triggers on `develop` (dev image).
-6) Create a `release/*` branch from `develop`.
+6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
 7) **Staging deploy** rebuilds the image with deterministic inputs.
 8) QA/UAT on staging.
-9) Run `semantic-release` to generate the release commit + `v*` tag.
-10) **Prod deploy** rebuilds the image with deterministic inputs.
-11) Merge `release/*` into `main` and back-merge to `develop`.
+9) **Prod deploy** rebuilds the image on `v*`.
+10) Back-merge `main` into `develop` (automated PR or manual).
 
 ## Notes
 
-- Rebuild per environment and rely on deterministic inputs to avoid drift.
+- Rebuild per environment using deterministic inputs to avoid drift.
 
 ---
 
@@ -95,14 +94,13 @@ Rule: **Only one CD path should be active** in a given project.
 3) Open a PR into `develop` and wait for CI to pass.
 4) Merge PR into `develop`.
 5) **Dev publish** runs on `develop` with dist-tag `dev`.
-6) Create a `release/*` branch from `develop`.
+6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
 7) **Staging publish** runs on `release/*` with dist-tag `rc`.
 8) QA/UAT on staging.
-9) Run `semantic-release` to generate the release commit + `v*` tag.
-10) **Prod publish** runs on tag with dist-tag `latest`.
-11) Merge `release/*` into `main` and back-merge to `develop`.
+9) **Prod publish** runs on tag with dist-tag `latest`.
+10) Back-merge `main` into `develop` (automated PR or manual).
 
 ## Notes
 
-- Use conventional commits + `semantic-release` to automate tagging.
+- Use conventional commits + `standard-version` to automate tagging.
 - Adjust dist-tags if your release policy differs.
