@@ -3,7 +3,7 @@
 Deployment standards for this section.
 
 ## CI gate (non-negotiable)
-- Runs on pull_request and push to main.
+- Runs on pull_request (all branches).
 - Uses Node 24.x + pnpm from packageManager (Corepack).
 - Steps run in order: format:check, lint (no warnings), type-check, test.
 - Any failure blocks the workflow.
@@ -20,7 +20,7 @@ Deployment standards for this section.
 
 ## Docker CD (services)
 - Build happens per environment.
-- Image is rebuilt using the same inputs for dev, staging, and prod.
+- Image is rebuilt on dev, staging, and prod using deterministic inputs.
 - Required secrets: GITHUB_TOKEN (GHCR) or registry-specific credentials.
 
 ## npm CD (libraries)
@@ -33,3 +33,7 @@ Deployment standards for this section.
 - Rebuild per environment using deterministic inputs.
 - Prefer tag-based releases for prod.
 - Keep audits outside CI by default.
+
+## Optional automation
+- Release workflow creates `release/vX.Y.Z`, release commit, and `v*` tag.
+- Back-merge PR from main -> develop after prod merge.
