@@ -1,48 +1,43 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report a defect or regression
 title: "[BUG]:"
 labels: bug
 assignees: ''
 
 ---
 
-# TO SCOPE THIS TICKET:
+# Jira Ticket: Bug Fix — <Short Description>
 
-[] create a descriptive title
+**Type:** Bug  
+**Priority:** TBD  
+**Status:** Planning
 
-[] complete TBDs below
+## Summary
+Briefly describe the bug and the user impact.
 
-[] assign epic to this ticket
+## Background / Context
+What were you doing? What environment, branch, or release?
 
-[] create relevant linking relations
+## Goals
+- Fix the defect without regression
+- Preserve expected behavior
 
-[] delete this section
+## Scope
+- What areas are affected
+- What is out of scope
 
-# DELETE ME AND ABOVE!
+## Acceptance Criteria
+- Bug is fixed and does not repro
+- Tests cover the regression (new or updated)
+- No new lint/type/test failures
 
+## Implementation Notes
+- Suspected root cause
+- Related files or components
+- Any constraints or risks
 
-
-## 🧑 Story
-
-We need to TBDTASK from TBDRESOURCE in order for TBDUSER to TBDACTION
-
- 
-
-## 🔨 Acceptance Criteria
-
-- AC1
-
-- AC2
-
- 
-
-## 📚 Resources
-
-- [PLANNINGDOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [FIGMADOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION2](WWWDOTEXAMPLEDOTCOM)
+## Verification Steps
+1) Steps to reproduce the bug
+2) Steps to verify the fix
+3) Regression checks

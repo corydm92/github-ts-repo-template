@@ -1,7 +1,7 @@
 # CI/CD System Boundary
 
 CI is the **quality gate**:
-- Runs on pull_request (and main if needed)
+- Runs on pull_request (and develop if needed)
 - Validates formatting, lint, types, and tests
 - Validates the inputs required for deterministic builds
 

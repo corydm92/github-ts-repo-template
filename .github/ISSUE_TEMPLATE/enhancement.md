@@ -1,48 +1,43 @@
 ---
 name: Enhancement
-about: Updating existing features and functionality
+about: Improve existing functionality
 title: "[ENHANCEMENT]:"
 labels: enhancement
 assignees: ''
 
 ---
 
-# TO SCOPE THIS TICKET:
+# Jira Ticket: Enhancement — <Short Description>
 
-[] create a descriptive title
+**Type:** Enhancement  
+**Priority:** TBD  
+**Status:** Planning
 
-[] complete TBDs below
+## Summary
+Describe the improvement and why it matters.
 
-[] assign epic to this ticket
+## Background / Context
+What’s the current behavior and limitation?
 
-[] create relevant linking relations
+## Goals
+- Improvement goals
+- Success criteria
 
-[] delete this section
+## Scope
+- In scope
+- Out of scope
 
-# DELETE ME AND ABOVE!
+## Acceptance Criteria
+- Improvement delivered as described
+- No regressions
+- Tests updated/added
 
+## Implementation Notes
+- Affected components
+- Risks/assumptions
+- Open questions
 
-
-## 🧑 Story
-
-We need to TBDTASK from TBDRESOURCE in order for TBDUSER to TBDACTION
-
- 
-
-## 🔨 Acceptance Criteria
-
-- AC1
-
-- AC2
-
- 
-
-## 📚 Resources
-
-- [PLANNINGDOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [FIGMADOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION2](WWWDOTEXAMPLEDOTCOM)
+## Verification Steps
+1) Validate improved behavior
+2) Ensure no regressions
+3) Run relevant tests

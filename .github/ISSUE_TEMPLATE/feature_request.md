@@ -1,48 +1,43 @@
 ---
 name: Feature request
-about: Adding new functionality
-title: "[FEATURE]: "
+about: Propose new functionality
+title: "[FEATURE]:"
 labels: feature
 assignees: ''
 
 ---
 
-# TO SCOPE THIS TICKET:
+# Jira Ticket: Feature — <Short Description>
 
-[] create a descriptive title
+**Type:** Feature  
+**Priority:** TBD  
+**Status:** Planning
 
-[] complete TBDs below
+## Summary
+Describe the feature and the user value.
 
-[] assign epic to this ticket
+## Background / Context
+Why now? What problem does this solve?
 
-[] create relevant linking relations
+## Goals
+- Primary outcomes
+- Key user value
 
-[] delete this section
+## Scope
+- In scope
+- Out of scope
 
-# DELETE ME AND ABOVE!
+## Acceptance Criteria
+- Functional requirements met
+- UX requirements met (if applicable)
+- Tests updated/added
 
+## Implementation Notes
+- Dependencies
+- Risks/assumptions
+- Open questions
 
-
-## 🧑 Story
-
-We need to TBDTASK from TBDRESOURCE in order for TBDUSER to TBDACTION
-
- 
-
-## 🔨 Acceptance Criteria
-
-- AC1
-
-- AC2
-
- 
-
-## 📚 Resources
-
-- [PLANNINGDOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [FIGMADOC1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION1](WWWDOTEXAMPLEDOTCOM)
-
-- [TECHDOCUMENTATION2](WWWDOTEXAMPLEDOTCOM)
+## Verification Steps
+1) Functional validation
+2) UX validation (if applicable)
+3) Regression checks

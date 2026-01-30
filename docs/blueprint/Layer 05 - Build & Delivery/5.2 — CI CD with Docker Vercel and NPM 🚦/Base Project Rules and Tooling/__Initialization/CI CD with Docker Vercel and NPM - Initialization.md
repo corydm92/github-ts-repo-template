@@ -7,9 +7,10 @@ This setup path wires **one** Gitflow CI/CD pipeline (Vercel, Docker, or npm) an
 ## 🎯 Goal
 
 Ship a project with:
-- CI gating on PRs and main.
+- CI gating on PRs (all branches) and develop.
 - Gitflow CD for a single deploy target.
 - Rebuild per environment using deterministic inputs to avoid drift.
+- Optional automation for release branch creation and back-merge to develop.
 
 ## 📦 What This Step Produces
 
@@ -29,12 +30,11 @@ Ship a project with:
 # Step 1 — Keep CI Only (Baseline Gate)
 
 CI is mandatory for all projects:
-- `pull_request` -> runs quality gate.
-- `push` to `main` -> runs quality gate.
+- `pull_request` -> runs quality gate (all branches).
 
 Required scripts (order matters):
 - `pnpm format:check`
-- `pnpm lint -- --max-warnings=0`
+- `pnpm lint --max-warnings=0`
 - `pnpm type-check`
 - `pnpm test`
 
@@ -48,7 +48,7 @@ Verify:
 Pick **one** Gitflow CD workflow and copy it into `.github/workflows`:
 
 - Templates live here:
-  - `docs/blueprint/Layer 05 - Build & Delivery/5.2 CI CD with Docker Vercel and NPM/Base Project Rules and Tooling/__Initialization/workflows/`
+  - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 - Choose one:
   - Web apps: `cd-vercel-gitflow.yml`
   - Services: `cd-docker-gitflow.yml`
@@ -59,7 +59,22 @@ Rule: **Only one CD path should be active** in a given project to avoid multiple
 
 ---
 
-# Step 3 — Configure Secrets
+# Step 3 — Optional Release Automation
+
+If you want releases created automatically:
+
+- Add `release-automation.yml` to `.github/workflows/`.
+- It creates `release/vX.Y.Z` from `develop`, then runs `standard-version` to create the release commit + `v*` tag.
+- It opens a PR into `main` for review and QA.
+
+Optional back-merge automation:
+
+- Add `backmerge-main-to-develop.yml` to `.github/workflows/`.
+- It opens a PR from `main` -> `develop` after main updates.
+
+---
+
+# Step 4 — Configure Secrets
 
 Vercel:
 - `VERCEL_TOKEN`
@@ -76,7 +91,7 @@ npm:
 
 ---
 
-# Step 4 — Verify Gitflow Triggers
+# Step 5 — Verify Gitflow Triggers
 
 1) Push to `develop` -> dev deploy/publish triggers.
 2) Create `release/*` -> staging deploy/publish triggers.
@@ -84,15 +99,15 @@ npm:
 
 ---
 
-# Step 5 — Release Tagging (Prod Gate)
+# Step 6 — Release Tagging (Prod Gate)
 
-Use conventional commits + `semantic-release` to create the release commit + `v*` tags.
+Use conventional commits + `standard-version` to create the release commit + `v*` tags.
 
 This tag is the prod trigger and must point to the release commit.
 
 ---
 
-# Step 6 — Document the Chosen Path
+# Step 7 — Document the Chosen Path
 
 Add a short note in project docs:
 - Which CD path is active.

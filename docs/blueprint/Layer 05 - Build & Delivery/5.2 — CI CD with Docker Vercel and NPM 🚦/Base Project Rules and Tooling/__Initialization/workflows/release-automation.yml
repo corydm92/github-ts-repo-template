@@ -1,0 +1,86 @@
+name: Release Automation (gitflow)
+
+# Purpose:
+# - Create release/* branch from develop.
+# - Generate release commit + tag using standard-version.
+# - Open PR from release/* into main.
+#
+# Required secrets:
+# - GITHUB_TOKEN (auto-provided) with permissions: contents: write, pull-requests: write
+# Notes:
+# - Uses conventional commits + standard-version to create the release commit + tag.
+# - Does not publish or deploy; it prepares the release branch + PR.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: "Base branch for release branch (default: develop)"
+        required: false
+        default: "develop"
+      release_prefix:
+        description: "Release branch prefix"
+        required: false
+        default: "release"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use pnpm from packageManager
+        run: corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compute next version (dry run for naming)
+        id: next
+        run: |
+          VERSION_LINE=$(pnpm exec standard-version --dry-run --skip.changelog --skip.commit 2>/dev/null | grep -m 1 "tagging release" || true)
+          NEXT_VERSION=$(echo "$VERSION_LINE" | sed -E 's/.*tagging release v([0-9]+\.[0-9]+\.[0-9]+).*/\\1/')
+          if [ -z "$NEXT_VERSION" ]; then
+            echo "Failed to compute next version. Ensure conventional commits exist."
+            exit 1
+          fi
+          echo "version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create release branch
+        run: |
+          git checkout "${{ inputs.base_branch }}"
+          git pull origin "${{ inputs.base_branch }}"
+          git checkout -b "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}"
+
+      - name: Create release commit + tag
+        run: |
+          pnpm exec standard-version
+
+      - name: Push branch + tags
+        run: |
+          git push -u origin "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}" --follow-tags
+
+      - name: Open PR into main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}" \
+            --title "release: v${{ steps.next.outputs.version }}" \
+            --body "Automated release PR for v${{ steps.next.outputs.version }}."
