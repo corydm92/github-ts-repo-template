@@ -4,19 +4,17 @@ How to adopt this section in a project.
 
 ## What to add
 - CI workflow with format, lint, type-check, test.
-- Gitflow CD workflow for your chosen deploy target (Vercel, Docker, or npm).
-- Release tooling (conventional commits + standard-version) if using tag-based releases.
-  - Optional: release-automation + back-merge workflows.
+- Trunk-based CD workflow for your chosen deploy target (Vercel, Docker, or npm).
+- Release tooling (conventional commits + standard-version) for tag-based releases.
 
 ## How to configure
 - Ensure package.json has a packageManager entry for deterministic pnpm.
-- Create develop, release/*, and main branches for Gitflow.
+- Use main as the trunk branch.
 - Set required secrets for the chosen deploy target.
 
 ## How to verify
 - Open a PR and confirm CI runs all gates.
-- Merge to develop and confirm dev deploy.
-- Create release/* and confirm staging deploy.
+- Merge to main and confirm dev deploy.
 - Push a v* tag and confirm prod deploy.
 
 ## Common setup issues

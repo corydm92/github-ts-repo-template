@@ -11,14 +11,17 @@ Use this when starting a new project from this template.
 - Confirm CI runs on PRs
 
 ## CD (choose one)
-- Vercel: cd-vercel-gitflow.yml
-- Docker: cd-docker-gitflow.yml
-- npm: cd-npm-gitflow.yml
+- Vercel: cd-vercel-trunk-based.yml
+- Docker: cd-docker-trunk-based.yml
+- npm: cd-npm-trunk-based.yml
 
-## Release Automation (optional)
+## Release Automation (required)
 - release-automation.yml
-- backmerge-main-to-develop.yml
+
+## Feature Flags
+- Add Feature Flags Policy: `docs/process/Feature Flags Policy.md`
+- Add a flag registry (file or service)
 
 ## Repo Settings
-- Set default branch to develop
-- Add branch protections for develop and main
+- Set default branch to main
+- Add branch protections for main

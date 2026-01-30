@@ -7,5 +7,5 @@
 
 ## CD (Continuous Delivery)
 - Rebuilds per environment using the same inputs and rules
-- Uses Gitflow triggers to control where releases go
+- Uses trunk-based triggers to control where releases go
 - Enforces deterministic build settings to avoid drift

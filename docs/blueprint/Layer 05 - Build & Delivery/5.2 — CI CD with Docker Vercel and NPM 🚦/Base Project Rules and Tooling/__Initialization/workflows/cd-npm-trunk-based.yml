@@ -1,23 +1,22 @@
-name: CD (npm gitflow)
+name: CD (npm trunk-based)
 
 # Required secrets:
 # - NPM_TOKEN: npm access token with publish rights.
 # Notes:
-# - This template publishes dev/rc tags on develop/release and latest on v* tags.
+# - This template publishes dev on main and latest on v* tags.
 # - Adjust dist-tags and build steps to match your release process.
 
 on:
   push:
     branches:
-      - develop
-      - "release/**"
+      - main
     tags:
       - "v*"
   workflow_dispatch:
 
 jobs:
   publish-dev:
-    if: ${{ github.ref == 'refs/heads/develop' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,36 +42,6 @@ jobs:
 
       - name: Publish dev tag
         run: pnpm publish --tag dev --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  publish-staging:
-    if: ${{ startsWith(github.ref, 'refs/heads/release/') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.x
-          registry-url: https://registry.npmjs.org
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Use pnpm from packageManager
-        run: corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
-
-      - name: Publish rc tag
-        run: pnpm publish --tag rc --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

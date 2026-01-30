@@ -5,7 +5,7 @@ It is intentionally verbose and links to examples where possible.
 
 ## 1) Core Rules
 
-- Follow Gitflow: feature/bug branches -> PR into develop -> release PR into main -> back-merge main -> develop.
+- Follow trunk-based: short-lived branches -> PR into main -> release via tags/automation.
 - CI runs on pull requests only (no push triggers).
 - CD workflows are template-only unless explicitly copied into `.github/workflows`.
 - Only one CD path should be active per project (Vercel OR Docker OR npm).
@@ -14,24 +14,21 @@ It is intentionally verbose and links to examples where possible.
 ## 2) Branching & PR Flow
 
 ### Standard flow
-1) Create branch from `develop`
-2) Open PR into `develop`
+1) Create branch from `main`
+2) Open PR into `main`
 3) CI runs on PR
-4) Merge to `develop` after CI passes
-5) Dev deploy runs (if CD path is installed)
+4) Merge to `main` after CI passes
+5) Dev deploy runs (if CD path is installed and wired for trunk)
 
 ### Release flow
 1) Run release automation workflow
-2) `release/vX.Y.Z` branch created + PR opened into `main`
-3) CI runs on release PR
-4) QA signoff
-5) Merge release PR into `main`
-6) Prod deploy runs (tag-based)
-7) Back-merge `main` -> `develop` (auto PR)
+2) Release commit + tag created on main
+3) Prod deploy runs (tag-based)
 
 References:
-- `docs/process/Gitflow Runbook.md`
+- `docs/process/Trunk-Based Runbook.md`
 - `docs/process/Template Checklist.md`
+- `docs/process/Feature Flags Policy.md`
 
 ## 3) CI/CD Behavior
 
@@ -39,13 +36,12 @@ References:
 - CD is branch/tag-driven once installed.
 
 CD paths:
-- Vercel: `cd-vercel-gitflow.yml`
-- Docker: `cd-docker-gitflow.yml`
-- npm: `cd-npm-gitflow.yml`
+- Vercel: `cd-vercel-trunk-based.yml`
+- Docker: `cd-docker-trunk-based.yml`
+- npm: `cd-npm-trunk-based.yml`
 
 Release automation:
 - `release-automation.yml`
-- `backmerge-main-to-develop.yml`
 
 References:
 - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
@@ -59,7 +55,7 @@ References:
 
 Examples:
 - `.github/ISSUE_TEMPLATE/*.md`
-- `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/CI CD with Docker Vercel and NPM - Gitflow Deployment Flow.md`
+- `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/CI CD with Docker Vercel and NPM - Trunk-Based Deployment Flow.md`
 
 ## 5) Agent Expectations
 
@@ -69,12 +65,12 @@ Examples:
 - If conflicting instructions exist, clarify before changing.
 
 ### Full PR Flow (Required)
-1) If on a protected branch (`main`, `develop`, `release/*`), create a new feature/bug branch before committing.
+1) If on `main`, create a new feature/bug branch before committing.
 2) Review staged and unstaged changes; group related files into separate commits.
 3) Use clear, conventional commit messages.
 4) Push the branch.
 5) Draft PR title + body + labels (ask once if details are missing).
-6) Create PR against the correct base branch (default: `develop`).
+6) Create PR against the correct base branch (default: `main`).
 
 ## 6) Troubleshooting
 
@@ -84,7 +80,8 @@ Examples:
 
 ## 7) Quick Links
 
-- Gitflow Runbook: `docs/process/Gitflow Runbook.md`
+- Trunk-Based Runbook: `docs/process/Trunk-Based Runbook.md`
+- Feature Flags Policy: `docs/process/Feature Flags Policy.md`
 - Template Checklist: `docs/process/Template Checklist.md`
 - CI/CD Troubleshooting: `docs/process/CI CD Troubleshooting.md`
 - Release Automation Behavior: `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Supporting Atomic Notes/Release Automation Behavior.md`

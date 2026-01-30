@@ -2,28 +2,28 @@
 
 Updated by Cory Morrissey: 1/29/2026
 
-This setup path wires **one** Gitflow CI/CD pipeline (Vercel, Docker, or npm) and keeps builds deterministic and repeatable.
+This setup path wires **one** trunk-based CI/CD pipeline (Vercel, Docker, or npm) and keeps builds deterministic and repeatable.
 
 ## 🎯 Goal
 
 Ship a project with:
-- CI gating on PRs (all branches) and develop.
-- Gitflow CD for a single deploy target.
+- CI gating on PRs (all branches).
+- Trunk-based CD for a single deploy target.
 - Rebuild per environment using deterministic inputs to avoid drift.
-- Optional automation for release branch creation and back-merge to develop.
+- Release automation for commit and tag creation.
 
 ## 📦 What This Step Produces
 
 - A working CI pipeline at `.github/workflows/ci.yml`.
-- One Gitflow CD pipeline (Vercel, Docker, or npm).
+- One trunk-based CD pipeline (Vercel, Docker, or npm).
 - Required secrets defined in the repo settings.
-- A verified dev -> staging -> prod flow.
+- A verified dev -> prod flow.
 
 ## ✅ Preconditions
 
-- Gitflow branches exist: `develop`, `release/*`, `main`.
+- `main` is the trunk branch.
 - `package.json` includes `packageManager` for deterministic pnpm.
-- Conventional commits + release tooling are available if you plan tag-based prod releases.
+- Conventional commits + release tooling are available for tag-based prod releases.
 
 ---
 
@@ -45,32 +45,28 @@ Verify:
 
 # Step 2 — Choose Exactly One CD Path
 
-Pick **one** Gitflow CD workflow and copy it into `.github/workflows`:
+Pick **one** CD workflow and copy it into `.github/workflows`:
 
 - Templates live here:
   - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 - Choose one:
-  - Web apps: `cd-vercel-gitflow.yml`
-  - Services: `cd-docker-gitflow.yml`
-  - Libraries: `cd-npm-gitflow.yml`
+  - Web apps: `cd-vercel-trunk-based.yml`
+  - Services: `cd-docker-trunk-based.yml`
+  - Libraries: `cd-npm-trunk-based.yml`
 - Copy the chosen file into `.github/workflows/`.
 
 Rule: **Only one CD path should be active** in a given project to avoid multiple deployments.
 
 ---
 
-# Step 3 — Optional Release Automation
+# Step 3 — Release Automation
 
-If you want releases created automatically:
+Release automation is mandatory:
+
+We leverage standard-version to pull from commit history to generate our semver tag. This ensures we have a defined track to increment from and removing human error.
 
 - Add `release-automation.yml` to `.github/workflows/`.
-- It creates `release/vX.Y.Z` from `develop`, then runs `standard-version` to create the release commit + `v*` tag.
-- It opens a PR into `main` for review and QA.
-
-Optional back-merge automation:
-
-- Add `backmerge-main-to-develop.yml` to `.github/workflows/`.
-- It opens a PR from `main` -> `develop` after main updates.
+- It runs `standard-version` on `main` to create the release commit + `v*` tag.
 
 ---
 
@@ -80,7 +76,6 @@ Vercel:
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID_DEV`
-- `VERCEL_PROJECT_ID_STAGING`
 - `VERCEL_PROJECT_ID_PROD`
 
 Docker:
@@ -91,11 +86,10 @@ npm:
 
 ---
 
-# Step 5 — Verify Gitflow Triggers
+# Step 5 — Verify Trunk Triggers
 
-1) Push to `develop` -> dev deploy/publish triggers.
-2) Create `release/*` -> staging deploy/publish triggers.
-3) Push tag `v*` -> prod deploy/publish triggers.
+1) Merge to `main` -> dev deploy/publish triggers.
+2) Push tag `v*` -> prod deploy/publish triggers.
 
 ---
 
