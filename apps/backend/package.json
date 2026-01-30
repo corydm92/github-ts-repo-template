@@ -1,0 +1,11 @@
+{
+  "name": "@app/backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "format:check": "pnpm -C ../.. exec prettier apps/backend --check",
+    "lint": "pnpm -C ../.. exec eslint apps/backend --max-warnings=0 --no-error-on-unmatched-pattern",
+    "type-check": "pnpm -C ../.. exec tsc -p apps/backend/tsconfig.json --noEmit",
+    "test": "echo \"No test specified\" && exit 0"
+  }
+}
