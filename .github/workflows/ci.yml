@@ -41,14 +41,17 @@ jobs:
       - name: Fetch base ref
         run: git fetch origin ${{ github.base_ref }} --depth=1
 
-      - name: Format check
+      - name: Project format check
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run format:check:project
+
+      - name: App format checks
         run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run format:check:affected
 
-      - name: Lint
+      - name: App lint checks
         run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run lint:affected
 
-      - name: Type check
+      - name: App type checks
         run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run type-check:affected
 
-      - name: Test
+      - name: App tests
         run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run test:affected
