@@ -36,14 +36,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Fetch base ref
+        run: git fetch origin ${{ github.base_ref }} --depth=1
+
       - name: Format check
-        run: pnpm format:check
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run format:check:affected
 
       - name: Lint
-        run: pnpm lint --max-warnings=0
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run lint:affected
 
       - name: Type check
-        run: pnpm type-check
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run type-check:affected
 
       - name: Test
-        run: pnpm test
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run test:affected
