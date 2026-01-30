@@ -19,7 +19,7 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Preconditions
 
-- Vercel CD workflow exists: `.github/workflows/cd-vercel-gitflow.yml` (adjust triggers for trunk)
+- Vercel CD workflow exists: `.github/workflows/cd-vercel-trunk-based.yml`
 - Secrets are set:
   - `VERCEL_TOKEN`
   - `VERCEL_ORG_ID`
@@ -34,7 +34,7 @@ Rule: **Only one CD path should be active** in a given project.
 2) Commit changes using conventional commits (ex: `fix: handle null input`).
 3) Open a PR into `main` and wait for CI to pass.
 4) Merge PR into `main`.
-5) **Dev deploy** runs from `main` (if configured).
+5) **Dev deploy** runs from `main`.
 6) Run the release automation workflow to create release commit + `v*` tag.
 7) **Prod deploy** triggers on `v*` tag.
 
@@ -49,7 +49,7 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Preconditions
 
-- Docker CD workflow exists: `.github/workflows/cd-docker-gitflow.yml` (adjust triggers for trunk)
+- Docker CD workflow exists: `.github/workflows/cd-docker-trunk-based.yml`
 - Registry access is configured (GHCR by default).
 - Branches exist: `main`
 - CI workflow exists: `.github/workflows/ci.yml`
@@ -60,7 +60,7 @@ Rule: **Only one CD path should be active** in a given project.
 2) Commit changes using conventional commits.
 3) Open a PR into `main` and wait for CI to pass.
 4) Merge PR into `main`.
-5) **Dev deploy** runs from `main` (if configured).
+5) **Dev deploy** runs from `main`.
 6) Run the release automation workflow to create release commit + `v*` tag.
 7) **Prod deploy** rebuilds the image on `v*`.
 
@@ -74,7 +74,7 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Preconditions
 
-- npm CD workflow exists: `.github/workflows/cd-npm-gitflow.yml` (adjust triggers for trunk)
+- npm CD workflow exists: `.github/workflows/cd-npm-trunk-based.yml`
 - `NPM_TOKEN` secret is set.
 - Branches exist: `main`
 - CI workflow exists: `.github/workflows/ci.yml`
@@ -85,7 +85,7 @@ Rule: **Only one CD path should be active** in a given project.
 2) Commit changes using conventional commits.
 3) Open a PR into `main` and wait for CI to pass.
 4) Merge PR into `main`.
-5) **Dev publish** runs from `main` (if configured).
+5) **Dev publish** runs from `main`.
 6) Run the release automation workflow to create release commit + `v*` tag.
 7) **Prod publish** runs on tag with dist-tag `latest`.
 

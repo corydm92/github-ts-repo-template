@@ -11,11 +11,11 @@ Use this when starting a new project from this template.
 - Confirm CI runs on PRs
 
 ## CD (choose one)
-- Vercel: cd-vercel-gitflow.yml (adjust for trunk)
-- Docker: cd-docker-gitflow.yml (adjust for trunk)
-- npm: cd-npm-gitflow.yml (adjust for trunk)
+- Vercel: cd-vercel-trunk-based.yml
+- Docker: cd-docker-trunk-based.yml
+- npm: cd-npm-trunk-based.yml
 
-## Release Automation (optional)
+## Release Automation (required)
 - release-automation.yml
 
 ## Feature Flags

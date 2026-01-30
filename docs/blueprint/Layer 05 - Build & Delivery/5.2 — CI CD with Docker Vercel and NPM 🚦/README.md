@@ -14,7 +14,7 @@ The goal is consistency: rebuild per environment using deterministic inputs, and
 - Trunk-based CD triggers per environment
 - Deterministic rebuild rules (build per environment without drift)
 - Release tagging for production
-- Optional release automation and back-merge workflow
+- Release automation workflow
 
 ## Section structure
 - Base Project Rules and Tooling

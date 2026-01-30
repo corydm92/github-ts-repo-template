@@ -21,7 +21,7 @@ It is intentionally verbose and links to examples where possible.
 5) Dev deploy runs (if CD path is installed and wired for trunk)
 
 ### Release flow
-1) Run release automation workflow (optional)
+1) Run release automation workflow
 2) Release commit + tag created on main
 3) Prod deploy runs (tag-based)
 
@@ -36,9 +36,9 @@ References:
 - CD is branch/tag-driven once installed.
 
 CD paths:
-- Vercel: `cd-vercel-gitflow.yml` (adjust triggers for trunk)
-- Docker: `cd-docker-gitflow.yml` (adjust triggers for trunk)
-- npm: `cd-npm-gitflow.yml` (adjust triggers for trunk)
+- Vercel: `cd-vercel-trunk-based.yml`
+- Docker: `cd-docker-trunk-based.yml`
+- npm: `cd-npm-trunk-based.yml`
 
 Release automation:
 - `release-automation.yml`
@@ -55,7 +55,7 @@ References:
 
 Examples:
 - `.github/ISSUE_TEMPLATE/*.md`
-- `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/CI CD with Docker Vercel and NPM - Gitflow Deployment Flow.md` (trunk-based steps inside)
+- `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/CI CD with Docker Vercel and NPM - Trunk-Based Deployment Flow.md`
 
 ## 5) Agent Expectations
 

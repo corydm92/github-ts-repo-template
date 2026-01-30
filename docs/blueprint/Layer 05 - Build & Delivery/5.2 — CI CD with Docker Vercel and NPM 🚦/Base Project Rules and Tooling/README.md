@@ -23,7 +23,7 @@ Deployment standards for this section.
 - Required secrets: GITHUB_TOKEN (GHCR) or registry-specific credentials.
 
 ## npm CD (libraries)
-- main publishes dist-tag dev (if configured).
+- main publishes dist-tag dev.
 - v* tag publishes latest.
 - Required secrets: NPM_TOKEN.
 
@@ -32,5 +32,5 @@ Deployment standards for this section.
 - Prefer tag-based releases for prod.
 - Keep audits outside CI by default.
 
-## Optional automation
-- Release workflow creates a release branch (optional), release commit, and `v*` tag.
+## Release automation
+- Release workflow creates a release commit and `v*` tag on main.

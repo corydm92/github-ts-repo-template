@@ -5,8 +5,7 @@ How to adopt this section in a project.
 ## What to add
 - CI workflow with format, lint, type-check, test.
 - Trunk-based CD workflow for your chosen deploy target (Vercel, Docker, or npm).
-- Release tooling (conventional commits + standard-version) if using tag-based releases.
-  - Optional: release-automation workflow.
+- Release tooling (conventional commits + standard-version) for tag-based releases.
 
 ## How to configure
 - Ensure package.json has a packageManager entry for deterministic pnpm.
@@ -15,7 +14,7 @@ How to adopt this section in a project.
 
 ## How to verify
 - Open a PR and confirm CI runs all gates.
-- Merge to main and confirm dev deploy (if configured).
+- Merge to main and confirm dev deploy.
 - Push a v* tag and confirm prod deploy.
 
 ## Common setup issues
