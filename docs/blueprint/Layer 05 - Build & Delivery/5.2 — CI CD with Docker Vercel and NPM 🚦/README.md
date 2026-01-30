@@ -11,7 +11,7 @@ The goal is consistency: rebuild per environment using deterministic inputs, and
 
 ## What this section covers
 - A baseline CI gate (format, lint, type-check, test)
-- Gitflow-style CD triggers per environment
+- Trunk-based CD triggers per environment
 - Deterministic rebuild rules (build per environment without drift)
 - Release tagging for production
 - Optional release automation and back-merge workflow

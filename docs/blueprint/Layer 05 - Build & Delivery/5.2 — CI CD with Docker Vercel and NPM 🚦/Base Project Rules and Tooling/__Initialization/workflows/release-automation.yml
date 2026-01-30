@@ -1,9 +1,9 @@
-name: Release Automation (gitflow)
+name: Release Automation (trunk-based)
 
 # Purpose:
-# - Create release/* branch from develop.
+# - Create a release branch from main (optional).
 # - Generate release commit + tag using standard-version.
-# - Open PR from release/* into main.
+# - Open PR from release branch into main (optional).
 #
 # Required secrets:
 # - GITHUB_TOKEN (auto-provided) with permissions: contents: write, pull-requests: write
@@ -15,9 +15,9 @@ on:
   workflow_dispatch:
     inputs:
       base_branch:
-        description: "Base branch for release branch (default: develop)"
+        description: "Base branch for release branch (default: main)"
         required: false
-        default: "develop"
+        default: "main"
       release_prefix:
         description: "Release branch prefix"
         required: false

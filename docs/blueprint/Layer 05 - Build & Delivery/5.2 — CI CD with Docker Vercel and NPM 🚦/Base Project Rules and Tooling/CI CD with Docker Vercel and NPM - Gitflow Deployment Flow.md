@@ -1,12 +1,12 @@
-# 🚦 CI/CD with Docker, Vercel, and npm — Gitflow Deployment Flow
+# 🚦 CI/CD with Docker, Vercel, and npm — Trunk-Based Deployment Flow (Dev + Prod)
 
 Updated by Cory Morrissey: 1/29/2026
 
-This note describes the human flow from a fix on a feature branch to production using the Gitflow pipelines in this repo.
+This note describes the human flow from a fix on a feature branch to production using trunk-based delivery and feature flags.
 
-- **Path A (Web Apps)**: CI + Vercel Gitflow CD 🌐
-- **Path B (Services)**: CI + Docker Gitflow CD 🐳
-- **Path C (Libraries)**: CI + npm Gitflow CD 📦
+- **Path A (Web Apps)**: CI + Vercel CD 🌐
+- **Path B (Services)**: CI + Docker CD 🐳
+- **Path C (Libraries)**: CI + npm CD 📦
 
 Templates live in:
 `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
@@ -15,33 +15,28 @@ Rule: **Only one CD path should be active** in a given project.
 
 ---
 
-# 🌐 Path A — Web App Deploy (Vercel Gitflow)
+# 🌐 Path A — Web App Deploy (Vercel Trunk-Based)
 
 ## Preconditions
 
-- Vercel Gitflow workflow exists: `.github/workflows/cd-vercel-gitflow.yml`
+- Vercel CD workflow exists: `.github/workflows/cd-vercel-gitflow.yml` (adjust triggers for trunk)
 - Secrets are set:
   - `VERCEL_TOKEN`
   - `VERCEL_ORG_ID`
   - `VERCEL_PROJECT_ID_DEV`
-  - `VERCEL_PROJECT_ID_STAGING`
   - `VERCEL_PROJECT_ID_PROD`
-- Branches exist: `develop`, `release/*`, `main`
+- Branches exist: `main`
 - CI workflow exists: `.github/workflows/ci.yml`
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `develop` (ex: `fix/handle-null`).
+1) Create a branch from `main` (ex: `fix/handle-null`).
 2) Commit changes using conventional commits (ex: `fix: handle null input`).
-3) Open a PR into `develop` and wait for CI to pass.
-4) Merge PR into `develop`.
-5) **Dev deploy** triggers automatically from `develop`.
-6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
-7) **Staging deploy** triggers automatically from `release/*`.
-8) QA/UAT on staging.
-9) Release PR into `main` waits for approval; CI runs on the PR.
-10) **Prod deploy** triggers on `v*` tag after merge to `main`.
-11) Back-merge `main` into `develop` (automated PR or manual).
+3) Open a PR into `main` and wait for CI to pass.
+4) Merge PR into `main`.
+5) **Dev deploy** runs from `main` (if configured).
+6) Run the release automation workflow to create release commit + `v*` tag.
+7) **Prod deploy** triggers on `v*` tag.
 
 ## Notes
 
@@ -50,27 +45,24 @@ Rule: **Only one CD path should be active** in a given project.
 
 ---
 
-# 🐳 Path B — Service Deploy (Docker Gitflow)
+# 🐳 Path B — Service Deploy (Docker Trunk-Based)
 
 ## Preconditions
 
-- Docker Gitflow workflow exists: `.github/workflows/cd-docker-gitflow.yml`
+- Docker CD workflow exists: `.github/workflows/cd-docker-gitflow.yml` (adjust triggers for trunk)
 - Registry access is configured (GHCR by default).
-- Branches exist: `develop`, `release/*`, `main`
+- Branches exist: `main`
 - CI workflow exists: `.github/workflows/ci.yml`
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `develop`.
+1) Create a branch from `main`.
 2) Commit changes using conventional commits.
-3) Open a PR into `develop` and wait for CI to pass.
-4) Merge PR into `develop`.
-5) **Build + push** triggers on `develop` (dev image).
-6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
-7) **Staging deploy** rebuilds the image with deterministic inputs.
-8) QA/UAT on staging.
-9) **Prod deploy** rebuilds the image on `v*`.
-10) Back-merge `main` into `develop` (automated PR or manual).
+3) Open a PR into `main` and wait for CI to pass.
+4) Merge PR into `main`.
+5) **Dev deploy** runs from `main` (if configured).
+6) Run the release automation workflow to create release commit + `v*` tag.
+7) **Prod deploy** rebuilds the image on `v*`.
 
 ## Notes
 
@@ -78,27 +70,24 @@ Rule: **Only one CD path should be active** in a given project.
 
 ---
 
-# 📦 Path C — Library Publish (npm Gitflow)
+# 📦 Path C — Library Publish (npm Trunk-Based)
 
 ## Preconditions
 
-- npm Gitflow workflow exists: `.github/workflows/cd-npm-gitflow.yml`
+- npm CD workflow exists: `.github/workflows/cd-npm-gitflow.yml` (adjust triggers for trunk)
 - `NPM_TOKEN` secret is set.
-- Branches exist: `develop`, `release/*`, `main`
+- Branches exist: `main`
 - CI workflow exists: `.github/workflows/ci.yml`
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `develop`.
+1) Create a branch from `main`.
 2) Commit changes using conventional commits.
-3) Open a PR into `develop` and wait for CI to pass.
-4) Merge PR into `develop`.
-5) **Dev publish** runs on `develop` with dist-tag `dev`.
-6) Run the release automation workflow to create `release/vX.Y.Z`, release commit, and `v*` tag.
-7) **Staging publish** runs on `release/*` with dist-tag `rc`.
-8) QA/UAT on staging.
-9) **Prod publish** runs on tag with dist-tag `latest`.
-10) Back-merge `main` into `develop` (automated PR or manual).
+3) Open a PR into `main` and wait for CI to pass.
+4) Merge PR into `main`.
+5) **Dev publish** runs from `main` (if configured).
+6) Run the release automation workflow to create release commit + `v*` tag.
+7) **Prod publish** runs on tag with dist-tag `latest`.
 
 ## Notes
 

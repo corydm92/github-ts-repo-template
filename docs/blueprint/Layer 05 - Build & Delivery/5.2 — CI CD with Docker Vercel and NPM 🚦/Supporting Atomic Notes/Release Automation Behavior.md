@@ -1,13 +1,13 @@
 # Release Automation Behavior
 
 ## Purpose
-- Create a release branch from develop
+- Create a release branch from main
 - Generate release commit + tag using standard-version
-- Open a PR from release/* into main
+- Open a PR from the release branch into main (if using release branches)
 
 ## What it does
 - Computes next version from conventional commits
-- Creates release/vX.Y.Z branch
+- Creates a release branch (e.g., release/vX.Y.Z)
 - Runs standard-version (changelog + version + tag)
 - Pushes branch + tags
 - Opens PR into main for review
