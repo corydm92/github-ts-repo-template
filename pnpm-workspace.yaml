@@ -1,3 +1,4 @@
 packages:
   - "apps/*"
   - "packages/*"
+# Workspace ties apps together for shared tooling + CI filtering.

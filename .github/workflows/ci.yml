@@ -7,6 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Full checkout is required for change detection against the PR base.
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -36,6 +37,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # We diff against the PR base to run per-app checks only.
       - name: Fetch base ref
         run: git fetch origin ${{ github.base_ref }} --depth=1
 

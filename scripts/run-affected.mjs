@@ -45,6 +45,7 @@ const hasTypeScriptFiles = (app) => {
 };
 
 for (const app of apps) {
+  // Avoid failing non-TS apps (infra/db) during type-check.
   if (task === "type-check" && !hasTypeScriptFiles(app)) {
     console.log(`\n▶ ${task} for apps/${app} (skipped: no TS files)`);
     continue;

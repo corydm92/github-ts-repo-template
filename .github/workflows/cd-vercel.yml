@@ -7,6 +7,7 @@ name: CD (vercel trunk-based)
 # - VERCEL_PROJECT_ID_PROD: Vercel project ID for prod.
 # Notes:
 # - This repo deploys from apps/frontend by default.
+# - Change working-directory if you deploy a different app.
 
 on:
   push:

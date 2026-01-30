@@ -1,3 +1,3 @@
 # Database
 
-Placeholder for schema, migrations, and seed data.
+SQL-first by default. Use raw migrations and schema files here.

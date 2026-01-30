@@ -1,3 +1,3 @@
 # Infra
 
-Placeholder for deployment and infrastructure scaffolding.
+Terraform-first by default. Use .tf and environment config here.

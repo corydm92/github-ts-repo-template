@@ -10,6 +10,7 @@ const root = process.cwd();
 const appsDir = path.join(root, "apps");
 
 const sharedPaths = [
+  // Shared config changes should re-run all apps.
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",
@@ -34,6 +35,7 @@ const readChangedFiles = () => {
   if (mode === "pr") {
     if (!baseRef || !headSha) return [];
     const base = `origin/${baseRef}`;
+    // Compare PR head against base branch.
     return execSync(`git diff --name-only ${base}...${headSha}`, {
       encoding: "utf8",
     })
@@ -42,6 +44,7 @@ const readChangedFiles = () => {
       .filter(Boolean);
   }
 
+  // Local commit: only staged files.
   return execSync("git diff --name-only --cached", { encoding: "utf8" })
     .split("\n")
     .map((line) => line.trim())

@@ -5,7 +5,7 @@
   "scripts": {
     "format:check": "pnpm -C ../.. exec prettier apps/infra --check",
     "lint": "pnpm -C ../.. exec eslint apps/infra --max-warnings=0 --no-error-on-unmatched-pattern",
-    "type-check": "pnpm -C ../.. exec tsc -p apps/infra/tsconfig.json --noEmit",
+    "type-check": "echo \"No TS checks for Terraform-first infra\"",
     "test": "echo \"No test specified\" && exit 0"
   }
 }
