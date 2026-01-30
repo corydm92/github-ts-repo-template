@@ -1,4 +1,4 @@
-name: CD (npm gitflow)
+name: CD (npm trunk-based)
 
 # Required secrets:
 # - NPM_TOKEN: npm access token with publish rights.

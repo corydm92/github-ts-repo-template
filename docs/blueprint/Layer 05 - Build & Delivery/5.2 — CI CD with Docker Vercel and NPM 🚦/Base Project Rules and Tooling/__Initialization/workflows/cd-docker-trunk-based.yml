@@ -1,4 +1,4 @@
-name: CD (docker gitflow)
+name: CD (docker trunk-based)
 
 # Required secrets (depending on deploy target):
 # - GITHUB_TOKEN: for GHCR push (provided by GitHub).
@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-dev:
+  deploy-dev:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
@@ -46,6 +46,11 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:dev
+
+      - name: Deploy to dev (placeholder)
+        run: |
+          echo "Deploying image ghcr.io/${{ github.repository }}:dev to dev."
+          echo "Add your dev deploy steps here."
 
   deploy-prod:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}

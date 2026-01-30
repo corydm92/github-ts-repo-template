@@ -1,4 +1,4 @@
-name: CD (vercel gitflow)
+name: CD (vercel trunk-based)
 
 # Required secrets:
 # - VERCEL_TOKEN: Vercel personal token.

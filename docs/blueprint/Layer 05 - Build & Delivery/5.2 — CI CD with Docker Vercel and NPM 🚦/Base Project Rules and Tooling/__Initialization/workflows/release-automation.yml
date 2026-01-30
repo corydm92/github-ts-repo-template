@@ -1,31 +1,19 @@
 name: Release Automation (trunk-based)
 
 # Purpose:
-# - Create a release branch from main (optional).
-# - Generate release commit + tag using standard-version.
-# - Open PR from release branch into main (optional).
+# - Generate release commit + tag on main using standard-version.
+# - Push commit + tag to main.
 #
 # Required secrets:
-# - GITHUB_TOKEN (auto-provided) with permissions: contents: write, pull-requests: write
+# - GITHUB_TOKEN (auto-provided) with permissions: contents: write
 # Notes:
 # - Uses conventional commits + standard-version to create the release commit + tag.
-# - Does not publish or deploy; it prepares the release branch + PR.
+# - Does not publish or deploy; it only creates the release commit + tag.
 
 on:
   workflow_dispatch:
-    inputs:
-      base_branch:
-        description: "Base branch for release branch (default: main)"
-        required: false
-        default: "main"
-      release_prefix:
-        description: "Release branch prefix"
-        required: false
-        default: "release"
-
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   create-release:
@@ -50,37 +38,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Compute next version (dry run for naming)
-        id: next
+      - name: Checkout main
         run: |
-          VERSION_LINE=$(pnpm exec standard-version --dry-run --skip.changelog --skip.commit 2>/dev/null | grep -m 1 "tagging release" || true)
-          NEXT_VERSION=$(echo "$VERSION_LINE" | sed -E 's/.*tagging release v([0-9]+\.[0-9]+\.[0-9]+).*/\\1/')
-          if [ -z "$NEXT_VERSION" ]; then
-            echo "Failed to compute next version. Ensure conventional commits exist."
-            exit 1
-          fi
-          echo "version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Create release branch
-        run: |
-          git checkout "${{ inputs.base_branch }}"
-          git pull origin "${{ inputs.base_branch }}"
-          git checkout -b "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}"
+          git checkout main
+          git pull origin main
 
       - name: Create release commit + tag
-        run: |
-          pnpm exec standard-version
+        run: pnpm exec standard-version
 
-      - name: Push branch + tags
-        run: |
-          git push -u origin "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}" --follow-tags
-
-      - name: Open PR into main
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create \
-            --base main \
-            --head "${{ inputs.release_prefix }}/v${{ steps.next.outputs.version }}" \
-            --title "release: v${{ steps.next.outputs.version }}" \
-            --body "Automated release PR for v${{ steps.next.outputs.version }}."
+      - name: Push commit + tags
+        run: git push origin main --follow-tags
