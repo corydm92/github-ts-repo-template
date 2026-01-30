@@ -1,0 +1,49 @@
+name: CD (vercel trunk-based)
+
+# Required secrets:
+# - VERCEL_TOKEN: Vercel personal token.
+# - VERCEL_ORG_ID: Vercel team/org ID.
+# - VERCEL_PROJECT_ID_DEV: Vercel project ID for dev.
+# - VERCEL_PROJECT_ID_PROD: Vercel project ID for prod.
+# Notes:
+# - This repo deploys from apps/frontend by default.
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  deploy-dev:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to dev
+        working-directory: apps/frontend
+        run: |
+          npx vercel@latest deploy \
+            --token "${{ secrets.VERCEL_TOKEN }}" \
+            --org "${{ secrets.VERCEL_ORG_ID }}" \
+            --project "${{ secrets.VERCEL_PROJECT_ID_DEV }}"
+
+  deploy-prod:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to prod
+        working-directory: apps/frontend
+        run: |
+          npx vercel@latest deploy \
+            --token "${{ secrets.VERCEL_TOKEN }}" \
+            --org "${{ secrets.VERCEL_ORG_ID }}" \
+            --project "${{ secrets.VERCEL_PROJECT_ID_PROD }}" \
+            --prod
