@@ -14,7 +14,7 @@ on:
     branches:
       - main
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
 
 jobs:

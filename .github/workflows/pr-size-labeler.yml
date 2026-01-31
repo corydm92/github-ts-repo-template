@@ -13,9 +13,9 @@ jobs:
         uses: pascalgn/size-label-action@v0.5.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IGNORED: "*.md"
-          XS_MAX: "50"
-          S_MAX: "200"
-          M_MAX: "500"
-          L_MAX: "1000"
-          XL_MAX: "2000"
+          IGNORED: '*.md'
+          XS_MAX: '50'
+          S_MAX: '200'
+          M_MAX: '500'
+          L_MAX: '1000'
+          XL_MAX: '2000'

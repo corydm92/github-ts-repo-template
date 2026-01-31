@@ -1,9 +1,2 @@
 #!/usr/bin/env sh
-# Project-level formatting for non-app files.
-AFFECTED_MODE=staged pnpm run format:check:project
-
-# Per-app checks for touched apps only.
-AFFECTED_MODE=staged pnpm run format:check:affected
-AFFECTED_MODE=staged pnpm run lint:affected
-AFFECTED_MODE=staged pnpm run type-check:affected
-AFFECTED_MODE=staged pnpm run test:affected
+AFFECTED_MODE=staged pnpm run ci

@@ -7,7 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Full checkout is required for change detection against the PR base.
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -37,21 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # We diff against the PR base to run per-app checks only.
       - name: Fetch base ref
         run: git fetch origin ${{ github.base_ref }} --depth=1
 
-      - name: Project format check
-        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run format:check:project
-
-      - name: App format checks
-        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run format:check:affected
-
-      - name: App lint checks
-        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run lint:affected
-
-      - name: App type checks
-        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run type-check:affected
-
-      - name: App tests
-        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run test:affected
+      - name: Run project + app CI
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run ci

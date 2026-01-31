@@ -14,18 +14,21 @@ It is intentionally verbose and links to examples where possible.
 ## 2) Branching & PR Flow
 
 ### Standard flow
-1) Create branch from `main`
-2) Open PR into `main`
-3) CI runs on PR
-4) Merge to `main` after CI passes
-5) Dev deploy runs (if CD path is installed and wired for trunk)
+
+1. Create branch from `main`
+2. Open PR into `main`
+3. CI runs on PR
+4. Merge to `main` after CI passes
+5. Dev deploy runs (if CD path is installed and wired for trunk)
 
 ### Release flow
-1) Run release automation workflow
-2) Release commit + tag created on main
-3) Prod deploy runs (tag-based)
+
+1. Run release automation workflow
+2. Release commit + tag created on main
+3. Prod deploy runs (tag-based)
 
 References:
+
 - `docs/process/Trunk-Based Runbook.md`
 - `docs/process/Template Checklist.md`
 - `docs/process/Feature Flags Policy.md`
@@ -36,14 +39,17 @@ References:
 - CD is branch/tag-driven once installed.
 
 CD paths:
+
 - Vercel: `cd-vercel-trunk-based.yml`
 - Docker: `cd-docker-trunk-based.yml`
 - npm: `cd-npm-trunk-based.yml`
 
 Release automation:
+
 - `release-automation.yml`
 
 References:
+
 - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Supporting Atomic Notes/Release Automation Behavior.md`
 
@@ -54,6 +60,7 @@ References:
 - Keep Blueprint changes aligned with actual workflows.
 
 Examples:
+
 - `.github/ISSUE_TEMPLATE/*.md`
 - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/CI CD with Docker Vercel and NPM - Trunk-Based Deployment Flow.md`
 
@@ -65,12 +72,13 @@ Examples:
 - If conflicting instructions exist, clarify before changing.
 
 ### Full PR Flow (Required)
-1) If on `main`, create a new feature/bug branch before committing.
-2) Review staged and unstaged changes; group related files into separate commits.
-3) Use clear, conventional commit messages.
-4) Push the branch.
-5) Draft PR title + body + labels (ask once if details are missing).
-6) Create PR against the correct base branch (default: `main`).
+
+1. If on `main`, create a new feature/bug branch before committing.
+2. Review staged and unstaged changes; group related files into separate commits.
+3. Use clear, conventional commit messages.
+4. Push the branch.
+5. Draft PR title + body + labels (ask once if details are missing).
+6. Create PR against the correct base branch (default: `main`).
 
 ## 6) Troubleshooting
 

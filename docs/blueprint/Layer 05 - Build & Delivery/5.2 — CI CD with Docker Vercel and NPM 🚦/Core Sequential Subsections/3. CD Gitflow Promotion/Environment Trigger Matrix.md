@@ -1,12 +1,14 @@
 # Environment Trigger Matrix
 
 ## Dev
+
 - Branch: main
 - Purpose: integration testing and early validation (trunk)
 - Output: dev deploy or dev publish
 
 ## Production
-- Tag: v*
+
+- Tag: v\*
 - Purpose: final promotion and release audit trail
 - Output: prod deploy or latest publish
 
