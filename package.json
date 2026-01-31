@@ -26,7 +26,7 @@
     "ci:contract": "node scripts/workspace-contract.mjs",
     "ci:project": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run ci:contract",
     "ci:apps": "node scripts/run-affected.mjs ci",
-    "ci": "pnpm run ci:project && pnpm run ci:apps",
+    "ci": "node scripts/run-ci.mjs",
     "release": "standard-version"
   },
   "devDependencies": {

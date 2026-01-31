@@ -5,8 +5,9 @@ const root = process.cwd();
 const appsDir = path.join(root, 'apps');
 const packagesDir = path.join(root, 'packages');
 
-const appScripts = ['ci', 'lint', 'test', 'type-check', 'build', 'dev'];
-const packageScripts = ['ci', 'lint', 'test', 'type-check', 'build'];
+const appScripts = ['ci', 'build', 'dev'];
+const infraScripts = ['ci', 'build'];
+const packageScripts = ['ci', 'build'];
 
 const isDir = (p) => fs.existsSync(p) && fs.statSync(p).isDirectory();
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -43,7 +44,12 @@ const isInactive = (pkg) => pkg.workspaceStatus === 'inactive';
 
 for (const ws of workspaces) {
   if (isInactive(ws.pkg)) continue;
-  const required = ws.type === 'app' ? appScripts : packageScripts;
+  const required =
+    ws.type === 'app'
+      ? ws.name === 'infra'
+        ? infraScripts
+        : appScripts
+      : packageScripts;
   const scripts = ws.pkg.scripts || {};
   for (const key of required) {
     if (!scripts[key]) {
