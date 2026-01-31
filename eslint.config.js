@@ -41,6 +41,19 @@ export default [
           patterns: ['apps/**', '@root/apps/**'],
         },
       ],
+      'import/no-extraneous-dependencies': [
+        'error',
+        {
+          packageDir: [
+            '.',
+            './apps/frontend',
+            './apps/backend',
+            './apps/db',
+            './apps/infra',
+            './packages/shared',
+          ],
+        },
+      ],
       'import/no-relative-parent-imports': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [

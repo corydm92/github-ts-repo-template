@@ -147,7 +147,7 @@ const buildPackageDependents = () => {
 // Step C: packages/ changes -> run dependent apps (see packageDependents below).
 // Step D: include changed packages in the final payload (see resultPackages below).
 const changedFiles = readChangedFiles();
-const apps = new Set();
+const changedApps = new Set();
 let touchShared = false;
 const changedPackages = new Set();
 const packageDependents = buildPackageDependents();
@@ -159,7 +159,7 @@ for (const file of changedFiles) {
   // Step B: direct app changes.
   if (normalized.startsWith('apps/')) {
     const [, appName] = normalized.split('/');
-    if (appName) apps.add(appName);
+    if (appName) changedApps.add(appName);
     continue;
   }
 
@@ -191,11 +191,11 @@ if (touchShared) {
   resultApps = listApps();
   resultPackages = listPackages();
 } else {
-  resultApps = Array.from(apps);
+  resultApps = Array.from(changedApps);
 }
 
 // Step C (cont.): add dependent apps for changed packages.
-if (!touchShared && changedPackages.size > 0 && packageDependents.size > 0) {
+if (changedPackages.size > 0 && packageDependents.size > 0) {
   for (const pkgFolder of changedPackages) {
     const pkgPath = path.join(packagesDir, pkgFolder, 'package.json');
     const pkgName = readPackageName(pkgPath);
@@ -226,5 +226,7 @@ process.stdout.write(
     changedFiles,
     allApps: listApps(),
     allPackages: listPackages(),
+    changedApps: Array.from(changedApps),
+    changedPackages: Array.from(changedPackages),
   }),
 );

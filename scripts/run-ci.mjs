@@ -66,29 +66,44 @@ const {
   changedFiles = [],
   allApps = [],
   allPackages = [],
+  changedApps = [],
+  changedPackages = [],
 } = getAffectedTargets();
-const hasApps = apps.length > 0;
-const hasPackages = packages.length > 0;
 
-const detected = [];
-if (shared) detected.push('Shared files');
-if (hasPackages) detected.push('Packages');
-if (hasApps) detected.push('Apps');
+const hasAppChanges = changedApps.length > 0;
+const hasPackageChanges = changedPackages.length > 0;
 
 if (!projectOnly) {
   console.log('\nDetected Changes');
   console.log(`- Shared files: ${shared ? 'changed' : 'no change'}`);
-  if (shared) {
-    console.log(`- Packages: no change`);
-    console.log(`- Apps: none`);
-  } else {
-    console.log(`- Packages: ${hasPackages ? 'changed' : 'no change'}`);
-    console.log(`- Apps: ${hasApps ? apps.join(', ') : 'none'}`);
+  console.log(`- Packages: ${hasPackageChanges ? 'changed' : 'no change'}`);
+  console.log(`- Apps: ${hasAppChanges ? changedApps.join(', ') : 'none'}`);
+
+  const sharedFiles = changedFiles.filter(
+    (file) => !file.startsWith('apps/') && !file.startsWith('packages/'),
+  );
+  const packageFiles = changedFiles.filter((file) =>
+    file.startsWith('packages/'),
+  );
+  const appFiles = changedFiles.filter((file) => file.startsWith('apps/'));
+
+  if (sharedFiles.length) {
+    console.log('\nShared Changed Files');
+    for (const file of sharedFiles) {
+      console.log(`- ${file}`);
+    }
   }
 
-  if (changedFiles.length) {
-    console.log('\nChanged Files');
-    for (const file of changedFiles) {
+  if (packageFiles.length) {
+    console.log('\nPackages Changed Files');
+    for (const file of packageFiles) {
+      console.log(`- ${file}`);
+    }
+  }
+
+  if (appFiles.length) {
+    console.log('\nApps Changed Files');
+    for (const file of appFiles) {
       console.log(`- ${file}`);
     }
   }
@@ -118,9 +133,10 @@ if (!projectOnly) {
           'test',
           'build',
         ].filter((t) => scripts[t]);
+        const changed = changedPackages.includes(pkg);
         const suffix = shared
           ? 'Triggered From Shared Files Change'
-          : packages.includes(pkg)
+          : changed
             ? 'Detected Change'
             : 'No Change Detected';
         const label =
@@ -153,9 +169,10 @@ if (!projectOnly) {
           'test',
           'build',
         ].filter((t) => scripts[t]);
+        const changed = changedApps.includes(app);
         const suffix = shared
           ? 'Triggered From Shared Files Change'
-          : apps.includes(app)
+          : changed
             ? 'Detected Change'
             : 'No Change Detected';
         const label = `${capitalize(app)} - ${suffix}`;
