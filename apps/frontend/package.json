@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "format": "prettier . --write",
+    "format:write": "prettier . --write",
+    "format:check": "prettier . --check",
     "lint": "eslint .",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
-    "ci": "pnpm run format && pnpm run lint && pnpm run type-check && pnpm run test"
+    "ci": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test"
   }
 }
