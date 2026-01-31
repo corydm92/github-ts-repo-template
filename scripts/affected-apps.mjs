@@ -3,8 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // 0) Inputs: how we detect changes in this run.
-const mode = process.env.AFFECTED_MODE || 'staged'; // staged | pr
+// - staged: local pre-commit (only staged files)
+// - pr:     PR CI (base branch vs HEAD)
+// - range:  push/merge CI (before SHA vs after SHA)
+const mode = process.env.AFFECTED_MODE || 'staged'; // staged | pr | range
 const baseRef = process.env.BASE_REF || '';
+const baseSha = process.env.BASE_SHA || '';
 const headSha = process.env.HEAD_SHA || '';
 
 const root = process.cwd();
@@ -27,8 +31,28 @@ const sharedPaths = [
   'scripts/',
 ];
 
+const isZeroSha = (sha) => /^0{40}$/.test(sha);
+
 // 2) Read changed files either from staged changes or a PR diff.
 const readChangedFiles = () => {
+  if (mode === 'range') {
+    // Range flow: compare two SHAs (e.g., push before -> after).
+    // In CD, this is the merge/push "before" SHA vs the new "after" SHA on main.
+    // The diff determines which apps/packages need a deploy.
+    if (!baseSha || !headSha || isZeroSha(baseSha)) {
+      return execSync('git ls-files', { encoding: 'utf8' })
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean);
+    }
+    return execSync(`git diff --name-only ${baseSha}...${headSha}`, {
+      encoding: 'utf8',
+    })
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
   if (mode === 'pr') {
     // PR flow: diff base branch vs current head.
     if (!baseRef || !headSha) return [];
