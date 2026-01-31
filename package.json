@@ -23,7 +23,8 @@
     "lint": "eslint . --ignore-pattern \"apps/**\" --ignore-pattern \"packages/**\"",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
-    "ci:project": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test",
+    "ci:contract": "node scripts/workspace-contract.mjs",
+    "ci:project": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run ci:contract",
     "ci:apps": "node scripts/run-affected.mjs ci",
     "ci": "pnpm run ci:project && pnpm run ci:apps",
     "release": "standard-version"
