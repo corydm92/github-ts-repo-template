@@ -52,9 +52,15 @@ importers:
 
   apps/db: {}
 
-  apps/frontend: {}
+  apps/frontend:
+    dependencies:
+      '@pkg/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   apps/infra: {}
+
+  packages/shared: {}
 
 packages:
 
