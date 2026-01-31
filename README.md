@@ -1,4 +1,4 @@
-# my-project
+# TypeScript Monorepo Template
 
 A lightweight starter to jumpstart a TypeScript application with structured docs, local quality gates, and flexible CI/CD patterns.
 
@@ -7,13 +7,18 @@ A lightweight starter to jumpstart a TypeScript application with structured docs
 1. **Initialize the Blueprint docs system** 🧭  
    Follow the Blueprint setup in `/docs/blueprint/Layer 00 - System Initialization`.
 
-2. **Complete Step 2: Project Seed** 🧱  
-   The docs are wired but not fully configured until you finish the Project Seed step.
+2. **Start Step 2: Project Seed** 🧱  
+   This template ships with the Blueprint system pre-configured, but it still requires project-specific setup.  
+   Continue the Blueprint initialization starting at Step 2 and complete all steps before coding.  
+   Start here: `/docs/blueprint/Layer 00 - System Initialization/0.2 — Project Seed`
 
 3. **Choose CI/CD for your project type** ⚙️  
    See Layer 5.2: `/docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦`
 
-## ⚡ Quick Start (for a new dev)
+4. **Check out Process Docs** 🧭  
+   See how the project is configured and run: `/docs/process/README.md`
+
+## 📦 Install dependencies
 
 ```sh
 corepack enable
@@ -44,13 +49,18 @@ node scripts/rename.mjs --name "my-project" --repo "yourname/my-project" --dry-r
   - `apps/infra/`
 - `packages/` is reserved for shared libraries and tooling (can be empty).
 - `docs/` contains the Blueprint system and process references.
+- `.husky/` stores local git hooks (pre-commit checks).
+- `.github/workflows/` contains CI/CD workflows.
+- `scripts/` holds project helper scripts (CI orchestration, rename).
 
 ## ✅ Quality Gates
 
-- **Husky pre-commit hooks** run locally before pushes
-- **CI runs on pull requests** and enforces:
-  - project gate (root checks)
-  - app gate (only affected apps run their own `ci` scripts)
+- **Local pre-commit (Husky)** runs `pnpm run ci` before every commit.
+- **ci:project** runs repo-level checks (lint + test) for shared config/tooling.
+- **ci:apps** detects changed apps under `/apps` and runs each app’s own `ci` script.
+- **CI on PRs** runs the same flow: project gate first, then affected app gates.
+- **Merge to main** triggers CD for the affected app only (when CD is configured).
+- **CD (IN PROGRESS)**: on merge, only the changed app is deployed (build image or provider deploy). Each app owns its dist output and is treated as a deployable entity.
 
 ## 🛠 Repo Maintenance
 
