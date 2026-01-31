@@ -29,6 +29,7 @@ export default [
       },
     },
     rules: {
+      'import/no-relative-parent-imports': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',

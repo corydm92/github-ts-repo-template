@@ -1,4 +1,4 @@
-# 0.1 Section Example
+# 1.1 Project Architecture
 
 Copy this folder to create a new Section in this layer, then rename it.
 
