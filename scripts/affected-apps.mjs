@@ -57,6 +57,12 @@ const listApps = () =>
         .filter((name) => fs.statSync(path.join(appsDir, name)).isDirectory())
     : [];
 
+// 3b) Guard: only treat package folders as packages.
+const isPackageDir = (name) => {
+  const pkgDir = path.join(packagesDir, name);
+  return fs.existsSync(pkgDir) && fs.statSync(pkgDir).isDirectory();
+};
+
 // 4) Read package.json names for packages/ + apps/.
 // This is used for graph-aware dependency detection.
 const readPackageName = (pkgPath) => {
@@ -106,6 +112,7 @@ const buildPackageDependents = () => {
 // Step A: shared paths -> run all apps (see touchShared below).
 // Step B: apps/ changes -> run those apps (see apps Set below).
 // Step C: packages/ changes -> run dependent apps (see packageDependents below).
+// Step D: include changed packages in the final payload (see resultPackages below).
 const changedFiles = readChangedFiles();
 const apps = new Set();
 let touchShared = false;
@@ -125,7 +132,12 @@ for (const file of changedFiles) {
   // Step C: detect changed packages by folder name.
   if (normalized.startsWith('packages/')) {
     const [, pkgFolder] = normalized.split('/');
-    if (pkgFolder) changedPackages.add(pkgFolder);
+    if (pkgFolder && isPackageDir(pkgFolder)) {
+      changedPackages.add(pkgFolder);
+    } else {
+      // Non-package files under /packages are treated as shared changes.
+      touchShared = true;
+    }
     continue;
   }
 
@@ -139,11 +151,12 @@ for (const file of changedFiles) {
   }
 }
 
-let result = [];
+let resultApps = [];
+let resultPackages = [];
 if (touchShared) {
-  result = listApps();
+  resultApps = listApps();
 } else {
-  result = Array.from(apps);
+  resultApps = Array.from(apps);
 }
 
 // Step C (cont.): add dependent apps for changed packages.
@@ -155,9 +168,19 @@ if (!touchShared && changedPackages.size > 0 && packageDependents.size > 0) {
     const deps = packageDependents.get(pkgName);
     if (!deps) continue;
     for (const appName of deps) {
-      if (!result.includes(appName)) result.push(appName);
+      if (!resultApps.includes(appName)) resultApps.push(appName);
     }
   }
 }
 
-process.stdout.write(JSON.stringify(result));
+// Step D: include changed packages for package-level CI gates.
+if (changedPackages.size > 0) {
+  resultPackages = Array.from(changedPackages);
+}
+
+process.stdout.write(
+  JSON.stringify({
+    apps: resultApps,
+    packages: resultPackages,
+  }),
+);
