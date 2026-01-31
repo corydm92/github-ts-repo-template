@@ -3,11 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // Task to run inside each affected app (usually "ci").
-const task = process.argv[2];
-if (!task) {
-  console.error('Usage: node scripts/run-affected.mjs <task>');
-  process.exit(1);
-}
+const task = 'ci';
 
 // Delegate app detection to the shared helper.
 const getAffectedApps = () => {
@@ -23,30 +19,6 @@ if (!apps.length) {
   process.exit(0);
 }
 
-// Skip type-check when an app has no TS files.
-const hasTypeScriptFiles = (app) => {
-  const root = path.join(process.cwd(), 'apps', app);
-  const stack = [root];
-
-  while (stack.length) {
-    const current = stack.pop();
-    if (!current) continue;
-    const entries = fs.readdirSync(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        stack.push(fullPath);
-        continue;
-      }
-      if (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
-
 for (const app of apps) {
   const appPackageJson = path.join(process.cwd(), 'apps', app, 'package.json');
   if (!fs.existsSync(appPackageJson)) {
@@ -61,11 +33,6 @@ for (const app of apps) {
   if (!scripts[task]) {
     console.error(`\n✖ apps/${app} is missing script: ${task}`);
     process.exit(1);
-  }
-
-  if (task === 'type-check' && !hasTypeScriptFiles(app)) {
-    console.log(`\n▶ ${task} for apps/${app} (skipped: no TS files)`);
-    continue;
   }
 
   console.log(`\n▶ ${task} for apps/${app}`);
