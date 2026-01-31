@@ -35,16 +35,14 @@ pnpm install
 
 - **Husky pre-commit hooks** run locally before pushes
 - **CI runs on pull requests** and enforces:
-  - format
-  - lint
-  - type-check
-  - tests
+  - project gate (root checks)
+  - app gate (only affected apps run their own `ci` scripts)
 
 ## 🛠 Repo Maintenance
 
 - File-based labels and PR size labels run automatically on pull requests
 - CODEOWNERS is set to enforce review ownership
-- Branch protection checklist: `docs/process/Branch Protection Checklist.md`
+- Branch protection checklist: `docs/process/__Initialization/1. Branch Protection Checklist.md`
 
 ## 📘 Blueprint Docs (What it is)
 
