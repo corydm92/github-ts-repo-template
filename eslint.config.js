@@ -29,6 +29,12 @@ export default [
       },
     },
     rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['apps/**', '@root/apps/**'],
+        },
+      ],
       'import/no-relative-parent-imports': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
