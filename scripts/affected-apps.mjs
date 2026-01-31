@@ -87,6 +87,15 @@ const isPackageDir = (name) => {
   return fs.existsSync(pkgDir) && fs.statSync(pkgDir).isDirectory();
 };
 
+// 3c) List package folders under /packages.
+const listPackages = () =>
+  fs.existsSync(packagesDir)
+    ? fs
+        .readdirSync(packagesDir)
+        // Only treat folders as packages.
+        .filter((name) => isPackageDir(name))
+    : [];
+
 // 4) Read package.json names for packages/ + apps/.
 // This is used for graph-aware dependency detection.
 const readPackageName = (pkgPath) => {
@@ -142,6 +151,7 @@ const apps = new Set();
 let touchShared = false;
 const changedPackages = new Set();
 const packageDependents = buildPackageDependents();
+const packageImpacts = [];
 
 for (const file of changedFiles) {
   const normalized = file.replace(/\\/g, '/');
@@ -179,6 +189,7 @@ let resultApps = [];
 let resultPackages = [];
 if (touchShared) {
   resultApps = listApps();
+  resultPackages = listPackages();
 } else {
   resultApps = Array.from(apps);
 }
@@ -191,6 +202,10 @@ if (!touchShared && changedPackages.size > 0 && packageDependents.size > 0) {
     if (!pkgName) continue;
     const deps = packageDependents.get(pkgName);
     if (!deps) continue;
+    packageImpacts.push({
+      package: pkgFolder,
+      apps: Array.from(deps),
+    });
     for (const appName of deps) {
       if (!resultApps.includes(appName)) resultApps.push(appName);
     }
@@ -206,5 +221,7 @@ process.stdout.write(
   JSON.stringify({
     apps: resultApps,
     packages: resultPackages,
+    shared: touchShared,
+    packageImpacts,
   }),
 );

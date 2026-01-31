@@ -25,7 +25,8 @@
     "test": "echo \"No test specified\" && exit 0",
     "ci:contract": "node scripts/workspace-contract.mjs",
     "ci:project": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run ci:contract",
-    "ci:apps": "node scripts/run-affected.mjs ci",
+    "ci:apps": "node scripts/run-ci.mjs --apps-only",
+    "ci:packages": "node scripts/run-ci.mjs --packages-only",
     "ci": "node scripts/run-ci.mjs",
     "release": "standard-version"
   },
