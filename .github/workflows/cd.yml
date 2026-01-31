@@ -1,0 +1,42 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-stub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect affected targets
+        id: affected
+        run: |
+          AFFECTED_MODE=range BASE_SHA=${{ github.event.before }} HEAD_SHA=${{ github.sha }} \
+            node scripts/affected-apps.mjs > /tmp/affected.json
+          echo "targets=$(cat /tmp/affected.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Build + deploy
+        run: |
+          echo '${{ steps.affected.outputs.targets }}' > /tmp/targets.json
+          node -e '
+          const fs = require("node:fs");
+          const targets = JSON.parse(fs.readFileSync("/tmp/targets.json", "utf8"));
+          const apps = targets.apps || [];
+          const packages = targets.packages || [];
+          if (!apps.length && !packages.length) {
+            console.log("No affected apps or packages. Skipping.");
+            process.exit(0);
+          }
+          for (const app of apps) {
+            console.log(`CD: build + deploy apps/${app}`);
+          }
+          for (const pkg of packages) {
+            console.log(`CD: build + deploy packages/${pkg}`);
+          }
+          '
