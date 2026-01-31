@@ -1,0 +1,93 @@
+# CI Orchestration (Project + Apps)
+
+This repo treats the **project root** as the orchestrator and each app under `/apps` as an independent unit.
+CI runs on pull requests and executes:
+
+1) **Project gates** (root-level checks)
+2) **App gates** (only the apps that changed)
+
+---
+
+## How CI is triggered
+
+Workflow: `.github/workflows/ci.yml`
+
+- Trigger: `pull_request`
+- Uses Node 24 + Corepack + pnpm from `packageManager`
+- Installs dependencies once at the root
+- Runs `pnpm run ci` with PR context:
+  - `AFFECTED_MODE=pr`
+  - `BASE_REF=${{ github.base_ref }}`
+  - `HEAD_SHA=${{ github.sha }}`
+
+---
+
+## Project gate (root)
+
+Root scripts (in `package.json`):
+
+- `ci:project` → runs project-level checks
+- `ci` → runs `ci:project` then `ci:apps`
+
+Project checks are only meant for **repo-level files** (configs, workflows, etc).
+They do **not** enforce app-specific rules.
+
+---
+
+## App gate (per app)
+
+App checks are delegated to each app’s own `ci` script.
+
+- App `ci` is defined in `apps/<app>/package.json`
+- App CI can vary by app (frontend/back/db/infra are not forced to match)
+
+App CI is triggered via:
+
+- `scripts/affected-apps.mjs` → detects which apps changed
+- `scripts/run-affected.mjs` → runs `pnpm -C apps/<app> run ci`
+
+If an app changes but has no `ci` script, CI fails.
+
+---
+
+## Change detection rules
+
+Change detection uses:
+
+```
+git diff --name-only origin/<BASE_REF>...<HEAD_SHA>
+```
+
+- Changes under `apps/<name>` → run only that app
+- Changes in shared config (root files, lockfiles, tooling) → run **all apps**
+
+Shared config is defined in `scripts/affected-apps.mjs`.
+
+---
+
+## Local pre-commit behavior
+
+Hook: `.husky/pre-commit`
+
+```
+AFFECTED_MODE=staged pnpm run ci
+```
+
+This runs the same orchestration locally but uses **staged files** to detect affected apps.
+
+---
+
+## Add a new app
+
+1) Create folder under `/apps/<app>`
+2) Add `package.json` with a `ci` script
+3) App CI will run automatically when files change
+
+---
+
+## Quick checks
+
+From repo root:
+
+- `pnpm run ci` → project + affected apps
+- `pnpm -C apps/<app> run ci` → just one app
