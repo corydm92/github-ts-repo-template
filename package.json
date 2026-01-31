@@ -18,17 +18,13 @@
   },
   "scripts": {
     "prepare": "husky",
-    "format": "prettier . --write",
-    "format:check": "prettier . --check",
+    "format": "prettier . --write --ignore-path /apps",
     "lint": "eslint .",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
-    "format:check:project": "node scripts/project-files.mjs | node scripts/run-prettier.mjs",
-    "format:check:affected": "node scripts/run-affected.mjs format:check",
-    "lint:affected": "node scripts/run-affected.mjs lint",
-    "type-check:affected": "node scripts/run-affected.mjs type-check",
-    "test:affected": "node scripts/run-affected.mjs test",
-    "ci:affected": "pnpm run format:check:project && pnpm run format:check:affected && pnpm run lint:affected && pnpm run type-check:affected && pnpm run test:affected",
+    "ci:project": "pnpm run lint && pnpm run test",
+    "ci:apps": "node scripts/run-affected.mjs ci",
+    "ci": "pnpm run ci:project && pnpm run ci:apps",
     "release": "standard-version"
   },
   "devDependencies": {

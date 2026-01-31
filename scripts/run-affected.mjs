@@ -2,12 +2,14 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
+// Task to run inside each affected app (usually "ci").
 const task = process.argv[2];
 if (!task) {
   console.error('Usage: node scripts/run-affected.mjs <task>');
   process.exit(1);
 }
 
+// Delegate app detection to the shared helper.
 const getAffectedApps = () => {
   const output = execSync('node scripts/affected-apps.mjs', {
     encoding: 'utf8',
@@ -21,6 +23,7 @@ if (!apps.length) {
   process.exit(0);
 }
 
+// Skip type-check when an app has no TS files.
 const hasTypeScriptFiles = (app) => {
   const root = path.join(process.cwd(), 'apps', app);
   const stack = [root];
@@ -54,12 +57,12 @@ for (const app of apps) {
   const appPackage = JSON.parse(fs.readFileSync(appPackageJson, 'utf8'));
   const scripts = appPackage.scripts || {};
 
+  // Enforce that each app explicitly defines its gate.
   if (!scripts[task]) {
-    console.log(`\n▶ ${task} for apps/${app} (skipped: script not defined)`);
-    continue;
+    console.error(`\n✖ apps/${app} is missing script: ${task}`);
+    process.exit(1);
   }
 
-  // Avoid failing non-TS apps (infra/db) during type-check.
   if (task === 'type-check' && !hasTypeScriptFiles(app)) {
     console.log(`\n▶ ${task} for apps/${app} (skipped: no TS files)`);
     continue;

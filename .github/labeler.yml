@@ -1,52 +1,53 @@
 # File-based labels for pull requests
-"area: project":
+'area: project':
   - changed-files:
       - any-glob-to-any-file:
-          - ".github/**"
-          - "docs/**"
-          - "packages/**"
-          - "README.md"
-          - "package.json"
-          - "pnpm-lock.yaml"
-          - "tsconfig.json"
-          - "eslint.config.js"
-          - ".prettierrc.json"
-          - ".prettierignore"
-          - "commitlint.config.cjs"
-          - "commitlint.config.formatter.mjs"
+          - '.github/**'
+          - 'docs/**'
+          - 'packages/**'
+          - 'README.md'
+          - 'package.json'
+          - 'pnpm-lock.yaml'
+          - 'tsconfig.json'
+          - 'eslint.config.js'
+          - '.prettierrc.json'
+          - '.prettierignore'
+          - 'commitlint.config.cjs'
+          - 'commitlint.config.formatter.mjs'
 
-"area: docs":
+'area: docs':
   - changed-files:
-      - any-glob-to-any-file: ["docs/**", "README.md"]
+      - any-glob-to-any-file: ['docs/**', 'README.md']
 
-"area: workflows":
+'area: workflows':
   - changed-files:
-      - any-glob-to-any-file: [".github/workflows/**"]
+      - any-glob-to-any-file: ['.github/workflows/**']
 
-"area: github-templates":
+'area: github-templates':
   - changed-files:
-      - any-glob-to-any-file: [".github/ISSUE_TEMPLATE/**", ".github/PULL_REQUEST_TEMPLATE.md"]
+      - any-glob-to-any-file:
+          ['.github/ISSUE_TEMPLATE/**', '.github/PULL_REQUEST_TEMPLATE.md']
 
-"area: app-frontend":
+'area: app-frontend':
   - changed-files:
-      - any-glob-to-any-file: ["apps/frontend/**"]
+      - any-glob-to-any-file: ['apps/frontend/**']
 
-"area: app-backend":
+'area: app-backend':
   - changed-files:
-      - any-glob-to-any-file: ["apps/backend/**"]
+      - any-glob-to-any-file: ['apps/backend/**']
 
-"area: app-db":
+'area: app-db':
   - changed-files:
-      - any-glob-to-any-file: ["apps/db/**"]
+      - any-glob-to-any-file: ['apps/db/**']
 
-"area: app-infra":
+'area: app-infra':
   - changed-files:
-      - any-glob-to-any-file: ["apps/infra/**"]
+      - any-glob-to-any-file: ['apps/infra/**']
 
-"area: packages":
+'area: packages':
   - changed-files:
-      - any-glob-to-any-file: ["packages/**"]
+      - any-glob-to-any-file: ['packages/**']
 
-"area: source":
+'area: source':
   - changed-files:
-      - any-glob-to-any-file: ["src/**"]
+      - any-glob-to-any-file: ['src/**']
