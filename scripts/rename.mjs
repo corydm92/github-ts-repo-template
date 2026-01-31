@@ -13,7 +13,9 @@ const hasFlag = (flag) => args.includes(flag);
 const name = getArg('--name');
 if (!name) {
   console.error('Missing required --name');
-  console.error('Usage: node scripts/rename.mjs --name "my-project" [--description "..."] [--author "..."] [--repo "owner/repo"] [--homepage "https://..."] [--dry-run]');
+  console.error(
+    'Usage: node scripts/rename.mjs --name "my-project" [--description "..."] [--author "..."] [--repo "owner/repo"] [--homepage "https://..."] [--dry-run]',
+  );
   process.exit(1);
 }
 
@@ -79,7 +81,9 @@ const summary = () => {
   console.log('Rename summary:');
   if (!changes.length) console.log('- No package.json changes');
   for (const change of changes) {
-    console.log(`- ${change.field}: "${change.before ?? ''}" -> "${change.after ?? ''}"`);
+    console.log(
+      `- ${change.field}: "${change.before ?? ''}" -> "${change.after ?? ''}"`,
+    );
   }
   if (readmeBefore && readmeBefore !== readmeAfter) {
     console.log('- README title updated');

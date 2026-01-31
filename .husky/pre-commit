@@ -1,2 +1,3 @@
 #!/usr/bin/env sh
 AFFECTED_MODE=staged pnpm run ci
+git add -A
