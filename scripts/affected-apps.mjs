@@ -20,6 +20,7 @@ const sharedPaths = [
   'eslint.config.js',
   '.prettierrc.json',
   '.prettierignore',
+  '.github/workflows/',
   'commitlint.config.cjs',
   'commitlint.config.formatter.mjs',
   'scripts/',
