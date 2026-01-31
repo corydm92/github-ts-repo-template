@@ -21,6 +21,16 @@ corepack use pnpm@10.28.2
 pnpm install
 ```
 
+## 🧱 Project Structure
+
+- `apps/` is the home for project applications:
+  - `apps/frontend/`
+  - `apps/backend/`
+  - `apps/db/`
+  - `apps/infra/`
+- `packages/` is reserved for shared libraries and tooling (can be empty).
+- `docs/` contains the Blueprint system and process references.
+
 ## ✅ Quality Gates
 
 - **Husky pre-commit hooks** run locally before pushes

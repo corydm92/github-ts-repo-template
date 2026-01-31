@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -36,14 +38,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Format check
-        run: pnpm format:check
+      - name: Fetch base ref
+        run: git fetch origin ${{ github.base_ref }} --depth=1
 
-      - name: Lint
-        run: pnpm lint --max-warnings=0
-
-      - name: Type check
-        run: pnpm type-check
-
-      - name: Test
-        run: pnpm test
+      - name: Run project + app CI
+        run: AFFECTED_MODE=pr BASE_REF=${{ github.base_ref }} HEAD_SHA=${{ github.sha }} pnpm run ci

@@ -1,0 +1,10 @@
+{
+  "name": "@app/db",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "format": "prettier . --write",
+    "test": "echo \"No test specified\" && exit 0",
+    "ci": "pnpm run format && pnpm run test"
+  }
+}

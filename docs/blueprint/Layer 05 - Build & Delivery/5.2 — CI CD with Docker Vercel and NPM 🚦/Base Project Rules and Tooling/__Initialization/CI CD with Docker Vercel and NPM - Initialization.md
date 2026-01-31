@@ -7,6 +7,7 @@ This setup path wires **one** trunk-based CI/CD pipeline (Vercel, Docker, or npm
 ## 🎯 Goal
 
 Ship a project with:
+
 - CI gating on PRs (all branches).
 - Trunk-based CD for a single deploy target.
 - Rebuild per environment using deterministic inputs to avoid drift.
@@ -30,15 +31,18 @@ Ship a project with:
 # Step 1 — Keep CI Only (Baseline Gate)
 
 CI is mandatory for all projects:
+
 - `pull_request` -> runs quality gate (all branches).
 
 Required scripts (order matters):
+
 - `pnpm format:check`
 - `pnpm lint --max-warnings=0`
 - `pnpm type-check`
 - `pnpm test`
 
 Verify:
+
 - Open a PR and confirm CI runs all gates.
 
 ---
@@ -73,23 +77,26 @@ We leverage standard-version to pull from commit history to generate our semver 
 # Step 4 — Configure Secrets
 
 Vercel:
+
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID_DEV`
 - `VERCEL_PROJECT_ID_PROD`
 
 Docker:
+
 - GHCR uses `GITHUB_TOKEN` (auto-provided), or configure registry credentials.
 
 npm:
+
 - `NPM_TOKEN`
 
 ---
 
 # Step 5 — Verify Trunk Triggers
 
-1) Merge to `main` -> dev deploy/publish triggers.
-2) Push tag `v*` -> prod deploy/publish triggers.
+1. Merge to `main` -> dev deploy/publish triggers.
+2. Push tag `v*` -> prod deploy/publish triggers.
 
 ---
 
@@ -104,6 +111,7 @@ This tag is the prod trigger and must point to the release commit.
 # Step 7 — Document the Chosen Path
 
 Add a short note in project docs:
+
 - Which CD path is active.
 - Where secrets live.
 - Who approves prod tags.

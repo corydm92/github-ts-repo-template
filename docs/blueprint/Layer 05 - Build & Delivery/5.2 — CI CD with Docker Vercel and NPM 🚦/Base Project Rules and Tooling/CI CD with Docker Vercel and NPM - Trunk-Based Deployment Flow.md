@@ -30,13 +30,13 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `main` (ex: `fix/handle-null`).
-2) Commit changes using conventional commits (ex: `fix: handle null input`).
-3) Open a PR into `main` and wait for CI to pass.
-4) Merge PR into `main`.
-5) **Dev deploy** runs from `main`.
-6) Run the release automation workflow to create release commit + `v*` tag.
-7) **Prod deploy** triggers on `v*` tag.
+1. Create a branch from `main` (ex: `fix/handle-null`).
+2. Commit changes using conventional commits (ex: `fix: handle null input`).
+3. Open a PR into `main` and wait for CI to pass.
+4. Merge PR into `main`.
+5. **Dev deploy** runs from `main`.
+6. Run the release automation workflow to create release commit + `v*` tag.
+7. **Prod deploy** triggers on `v*` tag.
 
 ## Notes
 
@@ -56,13 +56,13 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `main`.
-2) Commit changes using conventional commits.
-3) Open a PR into `main` and wait for CI to pass.
-4) Merge PR into `main`.
-5) **Dev deploy** runs from `main`.
-6) Run the release automation workflow to create release commit + `v*` tag.
-7) **Prod deploy** rebuilds the image on `v*`.
+1. Create a branch from `main`.
+2. Commit changes using conventional commits.
+3. Open a PR into `main` and wait for CI to pass.
+4. Merge PR into `main`.
+5. **Dev deploy** runs from `main`.
+6. Run the release automation workflow to create release commit + `v*` tag.
+7. **Prod deploy** rebuilds the image on `v*`.
 
 ## Notes
 
@@ -81,13 +81,13 @@ Rule: **Only one CD path should be active** in a given project.
 
 ## Human flow (fix -> prod)
 
-1) Create a branch from `main`.
-2) Commit changes using conventional commits.
-3) Open a PR into `main` and wait for CI to pass.
-4) Merge PR into `main`.
-5) **Dev publish** runs from `main`.
-6) Run the release automation workflow to create release commit + `v*` tag.
-7) **Prod publish** runs on tag with dist-tag `latest`.
+1. Create a branch from `main`.
+2. Commit changes using conventional commits.
+3. Open a PR into `main` and wait for CI to pass.
+4. Merge PR into `main`.
+5. **Dev publish** runs from `main`.
+6. Run the release automation workflow to create release commit + `v*` tag.
+7. **Prod publish** runs on tag with dist-tag `latest`.
 
 ## Notes
 

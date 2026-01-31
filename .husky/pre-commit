@@ -1,5 +1,2 @@
 #!/usr/bin/env sh
-pnpm format
-pnpm lint
-pnpm type-check
-pnpm test
+AFFECTED_MODE=staged pnpm run ci

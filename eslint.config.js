@@ -5,16 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: [
-      'dist/**',
-      'build/**',
-      'coverage/**',
-      'node_modules/**',
-
-      // Tooling files: keep linting focused on app code
-      'commitlint.config.cjs',
-      'commitlint.config.formatter.mjs',
-    ],
+    ignores: ['dist/**', 'build/**', 'coverage/**', 'node_modules/**'],
   },
 
   js.configs.recommended,

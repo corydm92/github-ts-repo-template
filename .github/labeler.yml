@@ -1,16 +1,53 @@
 # File-based labels for pull requests
-"area: docs":
+'area: project':
   - changed-files:
-      - any-glob-to-any-file: ["docs/**", "README.md"]
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'docs/**'
+          - 'packages/**'
+          - 'README.md'
+          - 'package.json'
+          - 'pnpm-lock.yaml'
+          - 'tsconfig.json'
+          - 'eslint.config.js'
+          - '.prettierrc.json'
+          - '.prettierignore'
+          - 'commitlint.config.cjs'
+          - 'commitlint.config.formatter.mjs'
 
-"area: workflows":
+'area: docs':
   - changed-files:
-      - any-glob-to-any-file: [".github/workflows/**"]
+      - any-glob-to-any-file: ['docs/**', 'README.md']
 
-"area: templates":
+'area: workflows':
   - changed-files:
-      - any-glob-to-any-file: [".github/ISSUE_TEMPLATE/**", ".github/PULL_REQUEST_TEMPLATE.md"]
+      - any-glob-to-any-file: ['.github/workflows/**']
 
-"area: source":
+'area: github-templates':
   - changed-files:
-      - any-glob-to-any-file: ["src/**"]
+      - any-glob-to-any-file:
+          ['.github/ISSUE_TEMPLATE/**', '.github/PULL_REQUEST_TEMPLATE.md']
+
+'area: app-frontend':
+  - changed-files:
+      - any-glob-to-any-file: ['apps/frontend/**']
+
+'area: app-backend':
+  - changed-files:
+      - any-glob-to-any-file: ['apps/backend/**']
+
+'area: app-db':
+  - changed-files:
+      - any-glob-to-any-file: ['apps/db/**']
+
+'area: app-infra':
+  - changed-files:
+      - any-glob-to-any-file: ['apps/infra/**']
+
+'area: packages':
+  - changed-files:
+      - any-glob-to-any-file: ['packages/**']
+
+'area: source':
+  - changed-files:
+      - any-glob-to-any-file: ['src/**']
