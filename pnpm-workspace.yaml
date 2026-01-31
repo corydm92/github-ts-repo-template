@@ -1,4 +1,10 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
-# Workspace ties apps together for shared tooling + CI filtering.
+  # Workspace globs define which folders are treated as pnpm packages.
+  # Any package.json under these paths is included in installs + workspace graphs.
+  - 'apps/*' # App-level packages (frontend, backend, etc.)
+  - 'packages/*' # Shared/internal packages used by apps
+
+
+# Why this matters:
+# - pnpm can install/hoist deps once and link them into each workspace
+# - tooling can reason about apps vs shared packages for CI gating
