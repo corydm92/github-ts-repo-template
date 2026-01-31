@@ -1,0 +1,5 @@
+# Project-level Prettier ignore
+apps/**
+packages/**
+pnpm-lock.yaml
+pnpm-lock.yaml

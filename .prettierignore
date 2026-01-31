@@ -2,9 +2,5 @@ node_modules
 dist
 build
 coverage
-docs
 .github
 pnpm-lock.yaml
-
-# we dont format apps from project level, we format at app level
-/apps 

@@ -17,7 +17,25 @@ export default [
       globals: { ...globals.node, ...globals.es2023 },
     },
     plugins: { import: importPlugin },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: [
+            './tsconfig.json',
+            './apps/frontend/tsconfig.json',
+            './apps/backend/tsconfig.json',
+          ],
+        },
+      },
+    },
     rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['apps/**', '@root/apps/**'],
+        },
+      ],
+      'import/no-relative-parent-imports': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',

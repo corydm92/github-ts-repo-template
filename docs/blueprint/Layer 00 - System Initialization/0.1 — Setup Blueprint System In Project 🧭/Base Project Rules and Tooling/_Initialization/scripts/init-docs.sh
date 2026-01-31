@@ -184,8 +184,8 @@ for dir in docs/blueprint/*; do
   layer="$(basename "$dir")"
   layer_num="$(layer_number_from_name "$layer")"
 
-  # ✅ Sections are decimals of the base layer number (0.1, 1.1, 2.1, ...)
-  section_prefix="${layer_num}.1"
+  # ✅ Sections are decimals of the base layer number (0.0, 1.0, 2.0, ...)
+  section_prefix="${layer_num}.0"
   section_name="${section_prefix} Section Example"
   SECTION_EXAMPLE_DIR="$dir/${section_name}"
 

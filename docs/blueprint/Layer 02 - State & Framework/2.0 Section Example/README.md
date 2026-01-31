@@ -1,4 +1,4 @@
-# 4.1 Section Example
+# 2.0 Section Example
 
 Copy this folder to create a new Section in this layer, then rename it.
 

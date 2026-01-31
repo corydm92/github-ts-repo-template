@@ -38,7 +38,7 @@ Result: onboarding is faster, reviews are cleaner, and decisions don’t get los
 │  ├─ Blueprint Project Guide.md (created in Step 2)    # Project-level guidelines that govern how the Blueprint System is applied
 │  ├─ Layer 00 - System Initialization/
 │  ├─ Layer 01 - Language & Architecture/
-│  │  └─ 1.1 Section Example/                           # Example Section showing the standard internal structure, will be generated for every layer
+│  │  └─ 1.0 Section Example/                           # Example Section showing the standard internal structure, will be generated for every layer
 │  │     ├─ README.md
 │  │     ├─ Base Project Rules and Tooling/
 │  │     │  ├─ __Initialization/
