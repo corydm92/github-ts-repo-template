@@ -1,0 +1,98 @@
+# Architecture Decision Record
+
+Title: ADR-XXXX — Short, Descriptive Title  
+Status: Proposed | Accepted | Rejected | Superseded
+
+Proposed Date: YYYY-MM-DD  
+Accepted Date: YYYY-MM-DD (if applicable)
+
+Owner: Person or Team responsible for the decision  
+Approver(s): Person or group granting final sign-off
+
+---
+
+## Context
+
+Describe the problem or situation that requires a decision.
+
+Include:
+
+- what triggered this decision
+- relevant constraints (technical, organizational, timing)
+- why this decision needs to exist now
+
+This section explains why a decision is required, not what the decision is.
+
+---
+
+## Decision
+
+State the decision clearly and unambiguously.
+
+Include:
+
+- what is being chosen
+- what is explicitly not being chosen
+
+This section should stand alone as the authoritative statement of intent.
+
+---
+
+## Rationale
+
+Explain why this decision was selected.
+
+Include:
+
+- key tradeoffs considered
+- benefits gained
+- downsides or risks that are being accepted
+
+The goal is future clarity, not persuasion.
+
+---
+
+## Alternatives Considered
+
+List realistic alternatives and why they were not chosen.
+
+Each alternative should include:
+
+- brief description
+- primary reason for rejection
+
+If no viable alternatives existed, state that explicitly.
+
+---
+
+## Consequences
+
+Describe the impact of this decision.
+
+Include:
+
+- immediate effects
+- long-term implications
+- areas that may require migration or review later
+
+This section answers: what does this decision force us to live with?
+
+---
+
+## Supersedes
+
+Only include if applicable.
+
+- ADR-XXXX — Title of superseded decision
+
+---
+
+## Notes
+
+Optional clarifications, approval context, follow-ups, or review signals.
+
+Examples:
+
+- Link to discussion PR or RFC
+- Reason for rejection
+- Planned review window
