@@ -63,6 +63,9 @@ const {
   packages = [],
   shared = false,
   packageImpacts = [],
+  changedFiles = [],
+  allApps = [],
+  allPackages = [],
 } = getAffectedTargets();
 const hasApps = apps.length > 0;
 const hasPackages = packages.length > 0;
@@ -74,12 +77,20 @@ if (hasApps) detected.push('Apps');
 
 if (!projectOnly) {
   console.log('\nDetected Changes');
+  console.log(`- Shared files: ${shared ? 'changed' : 'no change'}`);
   if (shared) {
-    console.log('- Shared files');
+    console.log(`- Packages: no change`);
+    console.log(`- Apps: none`);
   } else {
-    console.log(`- Shared files: none`);
-    console.log(`- Packages: ${hasPackages ? packages.join(', ') : 'none'}`);
+    console.log(`- Packages: ${hasPackages ? 'changed' : 'no change'}`);
     console.log(`- Apps: ${hasApps ? apps.join(', ') : 'none'}`);
+  }
+
+  if (changedFiles.length) {
+    console.log('\nChanged Files');
+    for (const file of changedFiles) {
+      console.log(`- ${file}`);
+    }
   }
 
   if (!shared && packageImpacts.length) {
@@ -92,11 +103,12 @@ if (!projectOnly) {
   }
 
   if (!appsOnly) {
-    if (!hasPackages) {
+    const packageList = packagesOnly ? packages : allPackages;
+    if (!packageList.length) {
       console.log('\nPackage - No Change Detected');
       console.log('- Skipping CI');
     } else {
-      for (const pkg of packages) {
+      for (const pkg of packageList) {
         const pkgPath = `packages/${pkg}/package.json`;
         const scripts = readScripts(pkgPath);
         const tasks = [
@@ -108,22 +120,30 @@ if (!projectOnly) {
         ].filter((t) => scripts[t]);
         const suffix = shared
           ? 'Triggered From Shared Files Change'
-          : 'Detected Change';
+          : packages.includes(pkg)
+            ? 'Detected Change'
+            : 'No Change Detected';
         const label =
           pkg === 'shared'
             ? `Package - ${suffix}`
             : `Package ${capitalize(pkg)} - ${suffix}`;
+        if (suffix === 'No Change Detected') {
+          console.log(`\n${label}`);
+          console.log('- Skipping CI');
+          continue;
+        }
         runWorkspaceTasks(label, `packages/${pkg}`, tasks);
       }
     }
   }
 
   if (!packagesOnly) {
-    if (!hasApps) {
+    const appList = appsOnly ? apps : allApps;
+    if (!appList.length) {
       console.log('\nApp - No Change Detected');
       console.log('- Skipping CI');
     } else {
-      for (const app of apps) {
+      for (const app of appList) {
         const pkgPath = `apps/${app}/package.json`;
         const scripts = readScripts(pkgPath);
         const tasks = [
@@ -135,8 +155,15 @@ if (!projectOnly) {
         ].filter((t) => scripts[t]);
         const suffix = shared
           ? 'Triggered From Shared Files Change'
-          : 'Detected Change';
+          : apps.includes(app)
+            ? 'Detected Change'
+            : 'No Change Detected';
         const label = `${capitalize(app)} - ${suffix}`;
+        if (suffix === 'No Change Detected') {
+          console.log(`\n${label}`);
+          console.log('- Skipping CI');
+          continue;
+        }
         runWorkspaceTasks(label, `apps/${app}`, tasks);
       }
     }

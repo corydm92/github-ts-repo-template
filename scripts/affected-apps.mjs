@@ -223,5 +223,8 @@ process.stdout.write(
     packages: resultPackages,
     shared: touchShared,
     packageImpacts,
+    changedFiles,
+    allApps: listApps(),
+    allPackages: listPackages(),
   }),
 );
