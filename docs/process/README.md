@@ -4,5 +4,5 @@ Repeatable engineering workflows and templates.
 
 This folder contains:
 
-- Templates (created in later steps)
+- __Initialization/ (setup checklists + runbooks)
 - Operating procedures for maintaining the repo
