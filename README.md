@@ -1,4 +1,4 @@
-# 📦 TypeScript Project Template
+# my-project
 
 A lightweight starter to jumpstart a TypeScript application with structured docs, local quality gates, and flexible CI/CD patterns.
 
@@ -19,6 +19,20 @@ A lightweight starter to jumpstart a TypeScript application with structured docs
 corepack enable
 corepack use pnpm@10.28.2
 pnpm install
+```
+
+## 🏷 Rename this template
+
+Use the rename script to update project identity safely:
+
+```sh
+node scripts/rename.mjs --name "my-project" --repo "yourname/my-project"
+```
+
+Dry run:
+
+```sh
+node scripts/rename.mjs --name "my-project" --repo "yourname/my-project" --dry-run
 ```
 
 ## 🧱 Project Structure

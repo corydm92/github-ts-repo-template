@@ -1,6 +1,6 @@
 {
   "name": "github-ts-repo-template",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Template for creating TypeScript based github projects",
   "homepage": "https://github.com/corydm92/github-ts-repo-template#readme",
   "bugs": {
