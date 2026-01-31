@@ -4,3 +4,6 @@ build
 coverage
 docs
 .github
+
+# we dont format apps from project level, we format at app level
+/apps 

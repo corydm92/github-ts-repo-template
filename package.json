@@ -18,11 +18,11 @@
   },
   "scripts": {
     "prepare": "husky",
-    "format": "prettier . --write --ignore-path /apps",
+    "format": "prettier . --write",
     "lint": "eslint .",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
-    "ci:project": "pnpm run lint && pnpm run test",
+    "ci:project": "pnpm run format && pnpm run lint && pnpm run test",
     "ci:apps": "node scripts/run-affected.mjs ci",
     "ci": "pnpm run ci:project && pnpm run ci:apps",
     "release": "standard-version"
