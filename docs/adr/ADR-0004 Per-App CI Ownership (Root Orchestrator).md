@@ -41,11 +41,11 @@ It also allows each app to evolve its tooling without changing the root.
 
 ## Alternatives Considered
 
-1) Single root CI rules for all apps  
-Rejected because not all apps share the same language or tooling.
+1. Single root CI rules for all apps  
+   Rejected because not all apps share the same language or tooling.
 
-2) Separate repos per app  
-Rejected to keep shared tooling and documentation centralized.
+2. Separate repos per app  
+   Rejected to keep shared tooling and documentation centralized.
 
 ---
 

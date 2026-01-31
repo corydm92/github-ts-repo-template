@@ -2,7 +2,7 @@ node_modules
 dist
 build
 coverage
-docs
+# docs
 .github
 pnpm-lock.yaml
 

@@ -39,11 +39,11 @@ They also provide a single source of truth for tags and changelogs.
 
 ## Alternatives Considered
 
-1) Manual tagging  
-Rejected due to inconsistency and high risk of version drift.
+1. Manual tagging  
+   Rejected due to inconsistency and high risk of version drift.
 
-2) Ad-hoc release scripts  
-Rejected because the workflow is the required enforcement point.
+2. Ad-hoc release scripts  
+   Rejected because the workflow is the required enforcement point.
 
 ---
 

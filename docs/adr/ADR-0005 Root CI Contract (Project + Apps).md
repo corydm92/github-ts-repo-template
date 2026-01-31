@@ -44,11 +44,11 @@ validate themselves when impacted.
 
 ## Alternatives Considered
 
-1) Only app CI  
-Rejected because root tooling and configs can break without a root gate.
+1. Only app CI  
+   Rejected because root tooling and configs can break without a root gate.
 
-2) Only root CI  
-Rejected because app-specific rules would be lost or watered down.
+2. Only root CI  
+   Rejected because app-specific rules would be lost or watered down.
 
 ---
 

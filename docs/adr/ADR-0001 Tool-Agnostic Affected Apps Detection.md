@@ -53,14 +53,14 @@ Tradeoffs accepted:
 
 ## Alternatives Considered
 
-1) Nx or Turborepo  
-Rejected for now due to extra tooling surface area, config overhead, and template lock-in.
+1. Nx or Turborepo  
+   Rejected for now due to extra tooling surface area, config overhead, and template lock-in.
 
-2) Changesets + dependency graph tooling  
-Rejected because it introduces release tooling we do not need yet, and still adds coupling.
+2. Changesets + dependency graph tooling  
+   Rejected because it introduces release tooling we do not need yet, and still adds coupling.
 
-3) GitHub Actions path filters only  
-Rejected because they do not resolve package dependency graphs (only direct path changes).
+3. GitHub Actions path filters only  
+   Rejected because they do not resolve package dependency graphs (only direct path changes).
 
 ---
 

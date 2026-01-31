@@ -39,11 +39,11 @@ It also simplifies deployment per app.
 
 ## Alternatives Considered
 
-1) Single root build output  
-Rejected because it forces a global build for changes in any app.
+1. Single root build output  
+   Rejected because it forces a global build for changes in any app.
 
-2) Shared build step + app-specific deploy  
-Rejected because it still couples app delivery to root build logic.
+2. Shared build step + app-specific deploy  
+   Rejected because it still couples app delivery to root build logic.
 
 ---
 

@@ -38,11 +38,11 @@ It also aligns with branch protection requirements and review workflows.
 
 ## Alternatives Considered
 
-1) CI on push + PR  
-Rejected due to redundant executions and longer feedback cycles.
+1. CI on push + PR  
+   Rejected due to redundant executions and longer feedback cycles.
 
-2) CI on push only  
-Rejected because PR gates are the enforcement point for reviews and merges.
+2. CI on push only  
+   Rejected because PR gates are the enforcement point for reviews and merges.
 
 ---
 

@@ -2,7 +2,8 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Task to run inside each affected app (usually "ci").
+// Task to run inside each affected app (intentionally fixed to "ci").
+// We keep this non-parameterized because affected-app + graph logic is only meaningful for CI gating, not for ad-hoc task runs.
 const task = 'ci';
 
 // Delegate app detection to the shared helper.

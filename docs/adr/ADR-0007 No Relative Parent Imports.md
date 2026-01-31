@@ -39,11 +39,11 @@ The rule also prevents accidental cross-app boundary coupling.
 
 ## Alternatives Considered
 
-1) Allow relative imports everywhere  
-Rejected due to fragility and readability issues.
+1. Allow relative imports everywhere  
+   Rejected due to fragility and readability issues.
 
-2) Lint-only guidance without enforcement  
-Rejected because the rule must be consistent across contributors.
+2. Lint-only guidance without enforcement  
+   Rejected because the rule must be consistent across contributors.
 
 ---
 

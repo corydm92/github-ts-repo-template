@@ -45,11 +45,11 @@ branch proliferation.
 
 ## Alternatives Considered
 
-1) Gitflow  
-Rejected due to long-lived branches, higher coordination overhead, and slower delivery.
+1. Gitflow  
+   Rejected due to long-lived branches, higher coordination overhead, and slower delivery.
 
-2) GitHub Flow with release branches  
-Rejected because release branches reintroduce the long-lived branch problem.
+2. GitHub Flow with release branches  
+   Rejected because release branches reintroduce the long-lived branch problem.
 
 ---
 
