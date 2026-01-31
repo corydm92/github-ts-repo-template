@@ -29,10 +29,29 @@ export default [
       },
     },
     rules: {
+      'import/no-internal-modules': [
+        'error',
+        {
+          allow: ['@pkg/*', '@app/*', './**', '../**'],
+        },
+      ],
       'no-restricted-imports': [
         'error',
         {
           patterns: ['apps/**', '@root/apps/**'],
+        },
+      ],
+      'import/no-extraneous-dependencies': [
+        'error',
+        {
+          packageDir: [
+            '.',
+            './apps/frontend',
+            './apps/backend',
+            './apps/db',
+            './apps/infra',
+            './packages/shared',
+          ],
         },
       ],
       'import/no-relative-parent-imports': 'error',
@@ -40,6 +59,88 @@ export default [
       '@typescript-eslint/no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  {
+    files: ['apps/frontend/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            { target: './apps/frontend', from: './apps/backend' },
+            { target: './apps/frontend', from: './apps/db' },
+            { target: './apps/frontend', from: './apps/infra' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['apps/backend/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            { target: './apps/backend', from: './apps/frontend' },
+            { target: './apps/backend', from: './apps/db' },
+            { target: './apps/backend', from: './apps/infra' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['apps/db/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            { target: './apps/db', from: './apps/frontend' },
+            { target: './apps/db', from: './apps/backend' },
+            { target: './apps/db', from: './apps/infra' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['apps/infra/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            { target: './apps/infra', from: './apps/frontend' },
+            { target: './apps/infra', from: './apps/backend' },
+            { target: './apps/infra', from: './apps/db' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['packages/types-*/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@pkg/runtime-*'],
+        },
+      ],
+    },
+  },
+  {
+    files: ['packages/runtime-*/**/*.{ts,tsx,js,mjs,cjs}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@pkg/runtime-*'],
+        },
       ],
     },
   },
