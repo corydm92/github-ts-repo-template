@@ -15,8 +15,8 @@ const root = process.cwd();
 const appsDir = path.join(root, 'apps');
 const packagesDir = path.join(root, 'packages');
 
-// 1) Shared paths always invalidate all apps (tooling + CI definitions).
-const sharedPaths = [
+// 1) System updates always invalidate all apps (tooling + CI definitions).
+const systemPaths = [
   'package.json',
   'pnpm-lock.yaml',
   'pnpm-workspace.yaml',
@@ -142,13 +142,13 @@ const buildPackageDependents = () => {
 };
 
 // 6) Main flow (ordered for readability).
-// Step A: shared paths -> run all apps (see touchShared below).
+// Step A: System paths -> run all apps (see touchSystem below).
 // Step B: apps/ changes -> run those apps (see apps Set below).
 // Step C: packages/ changes -> run dependent apps (see packageDependents below).
 // Step D: include changed packages in the final payload (see resultPackages below).
 const changedFiles = readChangedFiles();
 const changedApps = new Set();
-let touchShared = false;
+let touchSystem = false;
 const changedPackages = new Set();
 const packageDependents = buildPackageDependents();
 const packageImpacts = [];
@@ -168,26 +168,23 @@ for (const file of changedFiles) {
     const [, pkgFolder] = normalized.split('/');
     if (pkgFolder && isPackageDir(pkgFolder)) {
       changedPackages.add(pkgFolder);
-    } else {
-      // Non-package files under /packages are treated as shared changes.
-      touchShared = true;
     }
     continue;
   }
 
-  // Step A: shared config triggers all apps.
+  // Step A: system config triggers all apps.
   if (
-    sharedPaths.some(
-      (shared) => normalized === shared || normalized.startsWith(shared),
+    systemPaths.some(
+      (system) => normalized === system || normalized.startsWith(system),
     )
   ) {
-    touchShared = true;
+    touchSystem = true;
   }
 }
 
 let resultApps = [];
 let resultPackages = [];
-if (touchShared) {
+if (touchSystem) {
   resultApps = listApps();
   resultPackages = listPackages();
 } else {
@@ -221,7 +218,7 @@ process.stdout.write(
   JSON.stringify({
     apps: resultApps,
     packages: resultPackages,
-    shared: touchShared,
+    systemChanges: touchSystem,
     packageImpacts,
     changedFiles,
     allApps: listApps(),

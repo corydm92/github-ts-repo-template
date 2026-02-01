@@ -1,3 +1,3 @@
-import { hello } from '@pkg/shared';
+import { hello } from '@pkg/shared-runtime/test';
 
 export const frontendHello = () => hello;

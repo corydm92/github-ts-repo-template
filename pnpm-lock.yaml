@@ -54,13 +54,15 @@ importers:
 
   apps/frontend:
     dependencies:
-      '@pkg/shared':
+      '@pkg/shared-runtime':
         specifier: workspace:*
-        version: link:../../packages/shared
+        version: link:../../packages/shared-types
 
   apps/infra: {}
 
-  packages/shared: {}
+  packages/shared-runtime: {}
+
+  packages/shared-types: {}
 
 packages:
 
