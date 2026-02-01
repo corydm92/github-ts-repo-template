@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./test": "./test/index.ts"
+    "./test": {
+      "types": "./test/index.ts",
+      "default": "./test/index.ts"
+    }
   },
   "scripts": {
     "format:write": "prettier . --write --ignore-path ../../.prettierignore",

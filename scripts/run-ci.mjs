@@ -84,7 +84,8 @@ const runProjectTasks = () => {
 };
 
 const runPackageTasks = () => {
-  const packageList = packagesOnly ? allPackages : changedPackages;
+  const packageList =
+    packagesOnly || changedSystems ? allPackages : changedPackages;
 
   if (!packageList.length) {
     console.log('\nPackage - No Change Detected');
@@ -119,7 +120,7 @@ const runPackageTasks = () => {
 };
 
 const runAppTasks = () => {
-  const appList = appsOnly ? allApps : changedApps;
+  const appList = appsOnly || changedSystems ? allApps : changedApps;
 
   if (!appList.length) {
     console.log('\nApp - No Change Detected');
