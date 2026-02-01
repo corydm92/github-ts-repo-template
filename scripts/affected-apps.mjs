@@ -147,9 +147,9 @@ const buildPackageDependents = () => {
 // Step C: packages/ changes -> run dependent apps (see packageDependents below).
 // Step D: include changed packages in the final payload (see resultPackages below).
 const changedFiles = readChangedFiles();
-const changedApps = new Set();
+const changedApps = [];
 let touchSystem = false;
-const changedPackages = new Set();
+const changedPackages = [];
 const packageDependents = buildPackageDependents();
 const packageImpacts = [];
 
@@ -159,7 +159,7 @@ for (const file of changedFiles) {
   // Step B: direct app changes.
   if (normalized.startsWith('apps/')) {
     const [, appName] = normalized.split('/');
-    if (appName) changedApps.add(appName);
+    if (appName) changedApps.push(appName);
     continue;
   }
 
@@ -167,7 +167,7 @@ for (const file of changedFiles) {
   if (normalized.startsWith('packages/')) {
     const [, pkgFolder] = normalized.split('/');
     if (pkgFolder && isPackageDir(pkgFolder)) {
-      changedPackages.add(pkgFolder);
+      changedPackages.push(pkgFolder);
     }
     continue;
   }
@@ -182,15 +182,6 @@ for (const file of changedFiles) {
   }
 }
 
-let resultApps = [];
-let resultPackages = [];
-if (touchSystem) {
-  resultApps = listApps();
-  resultPackages = listPackages();
-} else {
-  resultApps = Array.from(changedApps);
-}
-
 // Step C (cont.): add dependent apps for changed packages.
 if (changedPackages.size > 0 && packageDependents.size > 0) {
   for (const pkgFolder of changedPackages) {
@@ -203,27 +194,17 @@ if (changedPackages.size > 0 && packageDependents.size > 0) {
       package: pkgFolder,
       apps: Array.from(deps),
     });
-    for (const appName of deps) {
-      if (!resultApps.includes(appName)) resultApps.push(appName);
-    }
   }
-}
-
-// Step D: include changed packages for package-level CI gates.
-if (changedPackages.size > 0) {
-  resultPackages = Array.from(changedPackages);
 }
 
 process.stdout.write(
   JSON.stringify({
-    apps: resultApps,
-    packages: resultPackages,
-    systemChanges: touchSystem,
     packageImpacts,
     changedFiles,
     allApps: listApps(),
     allPackages: listPackages(),
-    changedApps: Array.from(changedApps),
-    changedPackages: Array.from(changedPackages),
+    changedApps: changedApps,
+    changedPackages: changedPackages,
+    changedSystems: touchSystem,
   }),
 );
