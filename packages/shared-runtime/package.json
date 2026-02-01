@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./test": "./test"
+    "./test": "./test/index.ts"
   },
   "scripts": {
     "format:write": "prettier . --write --ignore-path ../../.prettierignore",
