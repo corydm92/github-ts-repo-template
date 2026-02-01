@@ -11,5 +11,9 @@
     "build": "echo \"No build specified\" && exit 0",
     "dev": "echo \"No dev server specified\" && exit 0",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run build"
+  },
+  "dependencies": {
+    "@pkg/shared-runtime": "workspace:*",
+    "@pkg/shared-types": "workspace:*"
   }
 }

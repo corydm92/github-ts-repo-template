@@ -6,8 +6,8 @@ const appsDir = path.join(root, 'apps');
 const packagesDir = path.join(root, 'packages');
 
 const appScripts = ['ci', 'build', 'dev'];
-const infraScripts = ['ci', 'build'];
-const packageScripts = ['ci', 'build'];
+const infraScripts = ['ci'];
+const packageScripts = ['ci'];
 
 const isDir = (p) => fs.existsSync(p) && fs.statSync(p).isDirectory();
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));

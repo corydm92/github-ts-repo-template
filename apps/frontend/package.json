@@ -13,6 +13,7 @@
     "ci": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@pkg/shared-runtime": "workspace:*"
+    "@pkg/shared-runtime": "workspace:*",
+    "@pkg/shared-types": "workspace:*"
   }
 }

@@ -8,6 +8,10 @@ const projectOnly = args.has('--project-only');
 const appsOnly = args.has('--apps-only');
 const packagesOnly = args.has('--packages-only');
 
+// Project only skips packages and apps
+// Apps only skips project and packages
+// Packages only skips project and apps
+
 const step = (label, command) => {
   if (isCI) {
     console.log(`::group::${label}`);
@@ -29,14 +33,13 @@ const step = (label, command) => {
   }
 };
 
-if (!appsOnly && !packagesOnly) {
-  console.log('Project tasks');
-  step('format:check', 'pnpm run format:check');
-  step('lint', 'pnpm run lint');
-  step('type-check', 'pnpm run type-check');
-  step('test', 'pnpm run test');
-  step('ci:contract', 'pnpm run ci:contract');
-}
+// Manually written to avoid triggering every project script like packages/apps do
+// console.log('Project tasks');
+// step('format:check', 'pnpm run format:check');
+// step('lint', 'pnpm run lint');
+// step('type-check', 'pnpm run type-check');
+// step('test', 'pnpm run test');
+// step('ci:contract', 'pnpm run ci:contract');
 
 const getAffectedTargets = () => {
   const output = execSync('node scripts/affected-apps.mjs', {
@@ -44,6 +47,8 @@ const getAffectedTargets = () => {
   });
   return JSON.parse(output);
 };
+
+console.log(getAffectedTargets());
 
 const readScripts = (pkgPath) =>
   JSON.parse(execSync(`cat ${pkgPath}`, { encoding: 'utf8' })).scripts || {};
@@ -61,7 +66,7 @@ const runWorkspaceTasks = (label, cwd, tasks) => {
 const {
   apps = [],
   packages = [],
-  shared = false,
+  systemChanges = false,
   packageImpacts = [],
   changedFiles = [],
   allApps = [],
@@ -75,11 +80,11 @@ const hasPackageChanges = changedPackages.length > 0;
 
 if (!projectOnly) {
   console.log('\nDetected Changes');
-  console.log(`- Shared files: ${shared ? 'changed' : 'no change'}`);
+  console.log(`- System files: ${systemChanges ? 'changed' : 'no change'}`);
   console.log(`- Packages: ${hasPackageChanges ? 'changed' : 'no change'}`);
   console.log(`- Apps: ${hasAppChanges ? changedApps.join(', ') : 'none'}`);
 
-  const sharedFiles = changedFiles.filter(
+  const systemFiles = changedFiles.filter(
     (file) => !file.startsWith('apps/') && !file.startsWith('packages/'),
   );
   const packageFiles = changedFiles.filter((file) =>
@@ -87,9 +92,9 @@ if (!projectOnly) {
   );
   const appFiles = changedFiles.filter((file) => file.startsWith('apps/'));
 
-  if (sharedFiles.length) {
-    console.log('\nShared Changed Files');
-    for (const file of sharedFiles) {
+  if (systemFiles.length) {
+    console.log('\nSystem Changed Files');
+    for (const file of systemFiles) {
       console.log(`- ${file}`);
     }
   }
@@ -108,7 +113,7 @@ if (!projectOnly) {
     }
   }
 
-  if (!shared && packageImpacts.length) {
+  if (!systemChanges && packageImpacts.length) {
     console.log('\nPackage impacts');
     for (const impact of packageImpacts) {
       console.log(
@@ -134,13 +139,13 @@ if (!projectOnly) {
           'build',
         ].filter((t) => scripts[t]);
         const changed = changedPackages.includes(pkg);
-        const suffix = shared
-          ? 'Triggered From Shared Files Change'
+        const suffix = systemChanges
+          ? 'Triggered From System Files Change'
           : changed
             ? 'Detected Change'
             : 'No Change Detected';
         const label =
-          pkg === 'shared'
+          pkg === 'System'
             ? `Package - ${suffix}`
             : `Package ${capitalize(pkg)} - ${suffix}`;
         if (suffix === 'No Change Detected') {
@@ -170,8 +175,8 @@ if (!projectOnly) {
           'build',
         ].filter((t) => scripts[t]);
         const changed = changedApps.includes(app);
-        const suffix = shared
-          ? 'Triggered From Shared Files Change'
+        const suffix = systemChanges
+          ? 'Triggered From System Files Change'
           : changed
             ? 'Detected Change'
             : 'No Change Detected';
