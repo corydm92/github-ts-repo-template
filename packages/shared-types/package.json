@@ -9,5 +9,11 @@
     "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run test"
-  }
+  },
+  "ciTasks": [
+    "format:check",
+    "lint",
+    "type-check",
+    "test"
+  ]
 }

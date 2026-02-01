@@ -38,14 +38,26 @@ const getAffectedTargets = () => {
 
 console.log(getAffectedTargets());
 
-const readScripts = (pkgPath) =>
-  JSON.parse(execSync(`cat ${pkgPath}`, { encoding: 'utf8' })).scripts || {};
+// Each package.json has ci and ciPaths
+// ci = run all scripts as one script
+// ciPaths = array of ci scripts, used as a CI UI enhancement
+const readWorkspaceMeta = (pkgPath) => {
+  const pkg = JSON.parse(execSync(`cat ${pkgPath}`, { encoding: 'utf8' }));
+  return {
+    scripts: pkg.scripts || {},
+    ciTasks: Array.isArray(pkg.ciTasks) ? pkg.ciTasks : null,
+  };
+};
 
 const capitalize = (value) =>
   value ? `${value[0].toUpperCase()}${value.slice(1)}` : value;
 
 const runWorkspaceTasks = (label, cwd, tasks) => {
   console.log(`\n${label}`);
+  if (!tasks?.length) {
+    console.log('- Skipping CI');
+    return;
+  }
   for (const task of tasks) {
     step(task, `pnpm -C ${cwd} run ${task}`);
   }
@@ -69,6 +81,73 @@ const runProjectTasks = () => {
   step('type-check', 'pnpm run type-check');
   step('test', 'pnpm run test');
   step('ci:contract', 'pnpm run ci:contract');
+};
+
+const runPackageTasks = () => {
+  const packageList = packagesOnly ? allPackages : changedPackages;
+
+  if (!packageList.length) {
+    console.log('\nPackage - No Change Detected');
+    console.log('- Skipping CI');
+  } else {
+    for (const pkg of packageList) {
+      const pkgPath = `packages/${pkg}/package.json`;
+      const { scripts, ciTasks } = readWorkspaceMeta(pkgPath);
+      const tasks =
+        ciTasks ??
+        ['format:check', 'lint', 'type-check', 'test', 'build'].filter(
+          (t) => scripts[t],
+        );
+      const changed = changedPackages.includes(pkg);
+      const suffix = changedSystems
+        ? 'Triggered From System Files Change'
+        : changed
+          ? 'Detected Change'
+          : 'No Change Detected';
+      const label =
+        pkg === 'System'
+          ? `Package - ${suffix}`
+          : `Package ${capitalize(pkg)} - ${suffix}`;
+      if (!packagesOnly && suffix === 'No Change Detected') {
+        console.log(`\n${label}`);
+        console.log('- Skipping CI');
+        continue;
+      }
+      runWorkspaceTasks(label, `packages/${pkg}`, tasks);
+    }
+  }
+};
+
+const runAppTasks = () => {
+  const appList = appsOnly ? allApps : changedApps;
+
+  if (!appList.length) {
+    console.log('\nApp - No Change Detected');
+    console.log('- Skipping CI');
+  } else {
+    for (const app of appList) {
+      const pkgPath = `apps/${app}/package.json`;
+      const { scripts, ciTasks } = readWorkspaceMeta(pkgPath);
+      const tasks =
+        ciTasks ??
+        ['format:check', 'lint', 'type-check', 'test', 'build'].filter(
+          (t) => scripts[t],
+        );
+      const changed = changedApps.includes(app);
+      const suffix = changedSystems
+        ? 'Triggered From System Files Change'
+        : changed
+          ? 'Detected Change'
+          : 'No Change Detected';
+      const label = `${capitalize(app)} - ${suffix}`;
+      if (suffix === 'No Change Detected') {
+        console.log(`\n${label}`);
+        console.log('- Skipping CI');
+        continue;
+      }
+      runWorkspaceTasks(label, `apps/${app}`, tasks);
+    }
+  }
 };
 
 const getDetectedTelemetry = () => {
@@ -128,73 +207,24 @@ if (projectOnly) {
 
   console.log('\nProject only check finished, exiting.\n');
   process.exit(0);
-}
+} else if (packagesOnly) {
+  getDetectedTelemetry();
+  runPackageTasks();
 
-if (packagesOnly) {
-  const packageList = packagesOnly ? allPackages : changedPackages;
-  if (!packageList.length) {
-    console.log('\nPackage - No Change Detected');
-    console.log('- Skipping CI');
-  } else {
-    for (const pkg of packageList) {
-      const pkgPath = `packages/${pkg}/package.json`;
-      const scripts = readScripts(pkgPath);
-      const tasks = [
-        'format:check',
-        'lint',
-        'type-check',
-        'test',
-        'build',
-      ].filter((t) => scripts[t]);
-      const changed = changedPackages.includes(pkg);
-      const suffix = changedSystems
-        ? 'Triggered From System Files Change'
-        : changed
-          ? 'Detected Change'
-          : 'No Change Detected';
-      const label =
-        pkg === 'System'
-          ? `Package - ${suffix}`
-          : `Package ${capitalize(pkg)} - ${suffix}`;
-      if (suffix === 'No Change Detected') {
-        console.log(`\n${label}`);
-        console.log('- Skipping CI');
-        continue;
-      }
-      runWorkspaceTasks(label, `packages/${pkg}`, tasks);
-    }
-  }
-}
+  console.log('\nPackage only check finished, exiting.\n');
+  process.exit(0);
+} else if (appsOnly) {
+  getDetectedTelemetry();
+  runAppTasks();
 
-if (appsOnly) {
-  const appList = appsOnly ? allApps : changedApps;
-  if (!appList.length) {
-    console.log('\nApp - No Change Detected');
-    console.log('- Skipping CI');
-  } else {
-    for (const app of appList) {
-      const pkgPath = `apps/${app}/package.json`;
-      const scripts = readScripts(pkgPath);
-      const tasks = [
-        'format:check',
-        'lint',
-        'type-check',
-        'test',
-        'build',
-      ].filter((t) => scripts[t]);
-      const changed = changedApps.includes(app);
-      const suffix = changedSystems
-        ? 'Triggered From System Files Change'
-        : changed
-          ? 'Detected Change'
-          : 'No Change Detected';
-      const label = `${capitalize(app)} - ${suffix}`;
-      if (suffix === 'No Change Detected') {
-        console.log(`\n${label}`);
-        console.log('- Skipping CI');
-        continue;
-      }
-      runWorkspaceTasks(label, `apps/${app}`, tasks);
-    }
-  }
+  console.log('\nPackage only check finished, exiting.\n');
+  process.exit(0);
+} else {
+  runProjectTasks();
+  getDetectedTelemetry();
+  runPackageTasks();
+  runAppTasks();
+
+  console.log('\n Full CI check finished, exiting.\n');
+  process.exit(0);
 }

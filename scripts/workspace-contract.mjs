@@ -41,6 +41,15 @@ for (const ws of workspaces) {
 }
 
 const isInactive = (pkg) => pkg.workspaceStatus === 'inactive';
+const parseCiChain = (ciScript) =>
+  ciScript
+    .split('&&')
+    .map((step) => step.trim())
+    .filter(Boolean)
+    .map((step) => {
+      const match = step.match(/^pnpm run ([A-Za-z0-9:._-]+)$/);
+      return match ? match[1] : null;
+    });
 
 for (const ws of workspaces) {
   if (isInactive(ws.pkg)) continue;
@@ -56,6 +65,41 @@ for (const ws of workspaces) {
       errors.push(
         `${ws.type} ${ws.name} is missing script: ${key} (set workspaceStatus: "inactive" to skip)`,
       );
+    }
+  }
+
+  // CI contract: ciTasks must be a 1:1 mirror of the ci script.
+  if (scripts.ci) {
+    const ciTasks = ws.pkg.ciTasks;
+    if (!Array.isArray(ciTasks) || ciTasks.length === 0) {
+      errors.push(
+        `${ws.type} ${ws.name} is missing ciTasks (required to mirror scripts.ci)`,
+      );
+    } else {
+      const parsed = parseCiChain(scripts.ci);
+      if (parsed.some((task) => task === null)) {
+        errors.push(
+          `${ws.type} ${ws.name} has a ci script that is not a plain "pnpm run <task>" chain`,
+        );
+      } else {
+        const parsedTasks = parsed.filter(Boolean);
+        const matches =
+          parsedTasks.length === ciTasks.length &&
+          parsedTasks.every((task, i) => task === ciTasks[i]);
+        if (!matches) {
+          errors.push(
+            `${ws.type} ${ws.name} ciTasks must match scripts.ci in order and contents`,
+          );
+        }
+      }
+
+      for (const task of ciTasks || []) {
+        if (!scripts[task]) {
+          errors.push(
+            `${ws.type} ${ws.name} ciTasks references missing script: ${task}`,
+          );
+        }
+      }
     }
   }
 }

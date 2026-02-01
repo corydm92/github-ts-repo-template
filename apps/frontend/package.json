@@ -15,5 +15,12 @@
   "dependencies": {
     "@pkg/shared-runtime": "workspace:*",
     "@pkg/shared-types": "workspace:*"
-  }
+  },
+  "ciTasks": [
+    "format:check",
+    "lint",
+    "type-check",
+    "test",
+    "build"
+  ]
 }

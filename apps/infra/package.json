@@ -8,5 +8,10 @@
     "test": "echo \"No test specified\" && exit 0",
     "build": "echo \"No build specified\" && exit 0",
     "ci": "pnpm run format:check && pnpm run test && pnpm run build"
-  }
+  },
+  "ciTasks": [
+    "format:check",
+    "test",
+    "build"
+  ]
 }
