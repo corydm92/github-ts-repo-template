@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./runtime-test": "./runtime-test/index.ts"
+    "./runtime-test": "./runtime-test/index.ts",
+    "./runtime-test copy": "./runtime-test copy/index.ts"
   },
   "scripts": {
     "format:write": "prettier . --write --ignore-path ../../.prettierignore",
