@@ -51,12 +51,8 @@ const getAffectedTargets = () => {
   return JSON.parse(output);
 };
 
-console.log('\n');
-console.log(getAffectedTargets().packageImpacts);
-console.log('\n');
-
 // Each package.json has ci and ciPaths
-// ci = run all scripts as one script
+// ci = script that triggers all ci gates
 // ciPaths = array of ci scripts, used as a CI UI enhancement
 const readWorkspaceMeta = (pkgPath) => {
   const pkg = JSON.parse(execSync(`cat ${pkgPath}`, { encoding: 'utf8' }));
@@ -87,17 +83,13 @@ const {
   changedSystems = false,
 } = getAffectedTargets();
 
-console.log('\n');
-console.log(getAffectedTargets());
-console.log('\n');
-
 const impactedApps = new Set(packageImpacts.flatMap((impact) => impact.apps || []));
 // Merge direct + dependency-triggered app changes (Set prevents duplicates).
 const affectedApps = Array.from(new Set([...changedApps, ...impactedApps]));
 
 const runProjectTasks = () => {
   // Manually written to avoid triggering every project script like packages/apps do
-  console.log(header('Project tasks'));
+  console.log(header('Project Tasks'));
   step('format:check', 'pnpm run format:check');
   step('lint', 'pnpm run lint');
   step('type-check', 'pnpm run type-check');
@@ -192,7 +184,7 @@ const getDetectedTelemetry = () => {
   }
 
   if (!changedSystems && packageImpacts.length) {
-    console.log(`\n${header('Package impacts')}`);
+    console.log(`\n${header('Package Impacts')}`);
     for (const impact of packageImpacts) {
       console.log(`- ${impact.package} → ${impact.apps.join(', ') || 'no dependent apps'}`);
     }
