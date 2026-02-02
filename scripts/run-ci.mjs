@@ -51,7 +51,9 @@ const getAffectedTargets = () => {
   return JSON.parse(output);
 };
 
-// console.log(getAffectedTargets());
+console.log('\n');
+console.log(getAffectedTargets().packageImpacts);
+console.log('\n');
 
 // Each package.json has ci and ciPaths
 // ci = run all scripts as one script

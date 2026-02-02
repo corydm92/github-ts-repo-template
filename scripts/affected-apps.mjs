@@ -141,44 +141,40 @@ const buildPackageDependents = () => {
   return dependents;
 };
 
-// 6) Main flow (ordered for readability).
-// Step A: System paths -> run all apps (see touchSystem below).
-// Step B: apps/ changes -> run those apps (see apps Set below).
-// Step C: packages/ changes -> run dependent apps (see packageDependents below).
-// Step D: include changed packages in the final payload (see resultPackages below).
+// 6) Main flow
 const changedFiles = readChangedFiles();
 const changedApps = [];
 let touchSystem = false;
-const changedPackages = [];
+const changedPackages = new Set();
 const packageDependents = buildPackageDependents();
 const packageImpacts = [];
 
 for (const file of changedFiles) {
   const normalized = file.replace(/\\/g, '/');
 
-  // Step B: direct app changes.
+  // Step 1: direct app changes.
   if (normalized.startsWith('apps/')) {
     const [, appName] = normalized.split('/');
     if (appName) changedApps.push(appName);
     continue;
   }
 
-  // Step C: detect changed packages by folder name.
+  // Step 2: detect changed packages by folder name.
   if (normalized.startsWith('packages/')) {
     const [, pkgFolder] = normalized.split('/');
     if (pkgFolder && isPackageDir(pkgFolder)) {
-      changedPackages.push(pkgFolder);
+      changedPackages.add(pkgFolder);
     }
     continue;
   }
 
-  // Step A: system config triggers all apps.
+  // Step 3: system config triggers all apps.
   if (systemPaths.some((system) => normalized === system || normalized.startsWith(system))) {
     touchSystem = true;
   }
 }
 
-// Step C (cont.): add dependent apps for changed packages.
+// Step 2 (cont.): add dependent apps for changed packages.
 if (changedPackages.size > 0 && packageDependents.size > 0) {
   for (const pkgFolder of changedPackages) {
     const pkgPath = path.join(packagesDir, pkgFolder, 'package.json');
@@ -200,7 +196,7 @@ process.stdout.write(
     allApps: listApps(),
     allPackages: listPackages(),
     changedApps: changedApps,
-    changedPackages: changedPackages,
+    changedPackages: Array.from(changedPackages),
     changedSystems: touchSystem,
   }),
 );
