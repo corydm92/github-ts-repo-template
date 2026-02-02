@@ -27,6 +27,7 @@
     "ci:project": "node scripts/run-ci.mjs --project-only",
     "ci:apps": "node scripts/run-ci.mjs --apps-only",
     "ci:packages": "node scripts/run-ci.mjs --packages-only",
+    "ci:force": "node scripts/run-ci.mjs --force-full-ci",
     "ci": "node scripts/run-ci.mjs",
     "release": "standard-version"
   },

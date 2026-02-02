@@ -7,6 +7,7 @@ const args = new Set(process.argv.slice(2));
 const projectOnly = args.has('--project-only');
 const appsOnly = args.has('--apps-only');
 const packagesOnly = args.has('--packages-only');
+const forceFullCI = args.has('--force-full-ci');
 
 const colors = {
   reset: '\x1b[0m',
@@ -107,15 +108,21 @@ const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onl
   for (const workspace of workspaceList) {
     const pkgPath = `${baseDir}/${workspace}/package.json`;
     const { ciTasks } = readWorkspaceMeta(pkgPath);
+
     const changed = changedList.includes(workspace);
-    const suffix = changedSystems
-      ? 'Triggered From System Files Change'
-      : impactedSet && impactedSet.has(workspace)
-        ? 'Triggered From Dependency Change'
-        : changed
-          ? 'Detected Change'
-          : 'No Change Detected';
+
+    const suffix = forceFullCI
+      ? 'Triggered From Force Full CI'
+      : changedSystems
+        ? 'Triggered From System Files Change'
+        : impactedSet && impactedSet.has(workspace)
+          ? 'Triggered From Dependency Change'
+          : changed
+            ? 'Detected Change'
+            : 'No Change Detected';
+
     const label = kindLabel === 'Package' ? `Package ${workspace} - ${suffix}` : `${workspace} - ${suffix}`;
+
     if (!onlyMode && suffix === 'No Change Detected') {
       console.log(`\n${subheader(label)}`);
       console.log(muted('- Skipping CI'));
@@ -126,7 +133,7 @@ const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onl
 };
 
 const runPackageTasks = () => {
-  const packageList = packagesOnly || changedSystems ? allPackages : changedPackages;
+  const packageList = forceFullCI || packagesOnly || changedSystems ? allPackages : changedPackages;
   runWorkspaceGroup({
     kindLabel: 'Package',
     baseDir: 'packages',
@@ -138,7 +145,7 @@ const runPackageTasks = () => {
 };
 
 const runAppTasks = () => {
-  const appList = appsOnly || changedSystems ? allApps : affectedApps;
+  const appList = forceFullCI || appsOnly || changedSystems ? allApps : affectedApps;
   runWorkspaceGroup({
     kindLabel: 'App',
     baseDir: 'apps',
