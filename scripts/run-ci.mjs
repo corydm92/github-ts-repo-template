@@ -87,6 +87,14 @@ const {
   changedSystems = false,
 } = getAffectedTargets();
 
+console.log('\n');
+console.log(getAffectedTargets());
+console.log('\n');
+
+const impactedApps = new Set(packageImpacts.flatMap((impact) => impact.apps || []));
+// Merge direct + dependency-triggered app changes (Set prevents duplicates).
+const affectedApps = Array.from(new Set([...changedApps, ...impactedApps]));
+
 const runProjectTasks = () => {
   // Manually written to avoid triggering every project script like packages/apps do
   console.log(header('Project tasks'));
@@ -97,7 +105,7 @@ const runProjectTasks = () => {
   step('ci:contract', 'pnpm run ci:contract');
 };
 
-const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onlyMode }) => {
+const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onlyMode, impactedSet }) => {
   if (!workspaceList.length) {
     console.log(`\n${subheader(`${kindLabel} - No Change Detected`)}`);
     console.log(muted('- Skipping CI'));
@@ -110,9 +118,11 @@ const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onl
     const changed = changedList.includes(workspace);
     const suffix = changedSystems
       ? 'Triggered From System Files Change'
-      : changed
-        ? 'Detected Change'
-        : 'No Change Detected';
+      : impactedSet && impactedSet.has(workspace)
+        ? 'Triggered From Dependency Change'
+        : changed
+          ? 'Detected Change'
+          : 'No Change Detected';
     const label = kindLabel === 'Package' ? `Package ${workspace} - ${suffix}` : `${workspace} - ${suffix}`;
     if (!onlyMode && suffix === 'No Change Detected') {
       console.log(`\n${subheader(label)}`);
@@ -131,17 +141,19 @@ const runPackageTasks = () => {
     workspaceList: packageList,
     changedList: changedPackages,
     onlyMode: packagesOnly,
+    impactedSet: null,
   });
 };
 
 const runAppTasks = () => {
-  const appList = appsOnly || changedSystems ? allApps : changedApps;
+  const appList = appsOnly || changedSystems ? allApps : affectedApps;
   runWorkspaceGroup({
     kindLabel: 'App',
     baseDir: 'apps',
     workspaceList: appList,
     changedList: changedApps,
     onlyMode: appsOnly,
+    impactedSet: impactedApps,
   });
 };
 
