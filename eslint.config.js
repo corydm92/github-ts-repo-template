@@ -20,27 +20,19 @@ export default [
     settings: {
       'import/resolver': {
         typescript: {
-          project: [
-            './tsconfig.json',
-            './apps/frontend/tsconfig.json',
-            './apps/backend/tsconfig.json',
-          ],
+          project: ['./tsconfig.json', './apps/frontend/tsconfig.json', './apps/backend/tsconfig.json'],
         },
       },
     },
     rules: {
+      // Only allow explicit subpath exports + local file imports
       'import/no-internal-modules': [
         'error',
         {
-          allow: ['@pkg/*', '@app/*', './**', '../**'],
+          allow: ['@pkg/shared-runtime/*', '@pkg/shared-types/*', '@app/*', './**'],
         },
       ],
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: ['apps/**', '@root/apps/**'],
-        },
-      ],
+      // Enforce deps listed in each workspace package.json
       'import/no-extraneous-dependencies': [
         'error',
         {
@@ -50,18 +42,17 @@ export default [
             './apps/backend',
             './apps/db',
             './apps/infra',
-            './packages/shared',
+            './packages/shared-runtime',
+            './packages/shared-types',
           ],
         },
       ],
-      'import/no-relative-parent-imports': 'error',
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
+
+  // Cross-app boundaries
   {
     files: ['apps/frontend/**/*.{ts,tsx,js,mjs,cjs}'],
     rules: {
@@ -122,24 +113,15 @@ export default [
       ],
     },
   },
+
+  // Shared types can't import runtime
   {
-    files: ['packages/types-*/**/*.{ts,tsx,js,mjs,cjs}'],
+    files: ['packages/shared-types/**/*.{ts,tsx,js,mjs,cjs}'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
-          patterns: ['@pkg/runtime-*'],
-        },
-      ],
-    },
-  },
-  {
-    files: ['packages/runtime-*/**/*.{ts,tsx,js,mjs,cjs}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: ['@pkg/runtime-*'],
+          patterns: ['@pkg/shared-runtime/*'],
         },
       ],
     },

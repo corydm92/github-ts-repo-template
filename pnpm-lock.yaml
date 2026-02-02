@@ -48,19 +48,31 @@ importers:
         specifier: ^8.54.0
         version: 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
 
-  apps/backend: {}
+  apps/backend:
+    dependencies:
+      '@pkg/shared-runtime':
+        specifier: workspace:*
+        version: link:../../packages/shared-runtime
+      '@pkg/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
 
   apps/db: {}
 
   apps/frontend:
     dependencies:
-      '@pkg/shared':
+      '@pkg/shared-runtime':
         specifier: workspace:*
-        version: link:../../packages/shared
+        version: link:../../packages/shared-runtime
+      '@pkg/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
 
   apps/infra: {}
 
-  packages/shared: {}
+  packages/shared-runtime: {}
+
+  packages/shared-types: {}
 
 packages:
 

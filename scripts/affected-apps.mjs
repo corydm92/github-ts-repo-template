@@ -15,8 +15,8 @@ const root = process.cwd();
 const appsDir = path.join(root, 'apps');
 const packagesDir = path.join(root, 'packages');
 
-// 1) Shared paths always invalidate all apps (tooling + CI definitions).
-const sharedPaths = [
+// 1) System updates always invalidate all apps (tooling + CI definitions).
+const systemPaths = [
   'package.json',
   'pnpm-lock.yaml',
   'pnpm-workspace.yaml',
@@ -141,14 +141,10 @@ const buildPackageDependents = () => {
   return dependents;
 };
 
-// 6) Main flow (ordered for readability).
-// Step A: shared paths -> run all apps (see touchShared below).
-// Step B: apps/ changes -> run those apps (see apps Set below).
-// Step C: packages/ changes -> run dependent apps (see packageDependents below).
-// Step D: include changed packages in the final payload (see resultPackages below).
+// 6) Main flow
 const changedFiles = readChangedFiles();
-const changedApps = new Set();
-let touchShared = false;
+const changedApps = [];
+let touchSystem = false;
 const changedPackages = new Set();
 const packageDependents = buildPackageDependents();
 const packageImpacts = [];
@@ -156,45 +152,29 @@ const packageImpacts = [];
 for (const file of changedFiles) {
   const normalized = file.replace(/\\/g, '/');
 
-  // Step B: direct app changes.
+  // Step 1: direct app changes.
   if (normalized.startsWith('apps/')) {
     const [, appName] = normalized.split('/');
-    if (appName) changedApps.add(appName);
+    if (appName) changedApps.push(appName);
     continue;
   }
 
-  // Step C: detect changed packages by folder name.
+  // Step 2: detect changed packages by folder name.
   if (normalized.startsWith('packages/')) {
     const [, pkgFolder] = normalized.split('/');
     if (pkgFolder && isPackageDir(pkgFolder)) {
       changedPackages.add(pkgFolder);
-    } else {
-      // Non-package files under /packages are treated as shared changes.
-      touchShared = true;
     }
     continue;
   }
 
-  // Step A: shared config triggers all apps.
-  if (
-    sharedPaths.some(
-      (shared) => normalized === shared || normalized.startsWith(shared),
-    )
-  ) {
-    touchShared = true;
+  // Step 3: system config triggers all apps.
+  if (systemPaths.some((system) => normalized === system || normalized.startsWith(system))) {
+    touchSystem = true;
   }
 }
 
-let resultApps = [];
-let resultPackages = [];
-if (touchShared) {
-  resultApps = listApps();
-  resultPackages = listPackages();
-} else {
-  resultApps = Array.from(changedApps);
-}
-
-// Step C (cont.): add dependent apps for changed packages.
+// Step 2 (cont.): add dependent apps for changed packages.
 if (changedPackages.size > 0 && packageDependents.size > 0) {
   for (const pkgFolder of changedPackages) {
     const pkgPath = path.join(packagesDir, pkgFolder, 'package.json');
@@ -206,27 +186,17 @@ if (changedPackages.size > 0 && packageDependents.size > 0) {
       package: pkgFolder,
       apps: Array.from(deps),
     });
-    for (const appName of deps) {
-      if (!resultApps.includes(appName)) resultApps.push(appName);
-    }
   }
-}
-
-// Step D: include changed packages for package-level CI gates.
-if (changedPackages.size > 0) {
-  resultPackages = Array.from(changedPackages);
 }
 
 process.stdout.write(
   JSON.stringify({
-    apps: resultApps,
-    packages: resultPackages,
-    shared: touchShared,
     packageImpacts,
     changedFiles,
     allApps: listApps(),
     allPackages: listPackages(),
-    changedApps: Array.from(changedApps),
+    changedApps: changedApps,
     changedPackages: Array.from(changedPackages),
+    changedSystems: touchSystem,
   }),
 );
