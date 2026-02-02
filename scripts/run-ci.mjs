@@ -8,18 +8,33 @@ const projectOnly = args.has('--project-only');
 const appsOnly = args.has('--apps-only');
 const packagesOnly = args.has('--packages-only');
 
+const colors = {
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  cyan: '\x1b[36m',
+};
+
+const style = (value, ...tokens) => `${tokens.join('')}${value}${colors.reset}`;
+
+const header = (value) => style(value, colors.bold, colors.cyan);
+const subheader = (value) => style(value, colors.bold);
+const muted = (value) => style(value, colors.dim);
+
 const step = (label, command) => {
   if (isCI) {
     console.log(`::group::${label}`);
   }
-  const pendingLine = `- [ ] ${label}  run: ${command}`;
+  const pendingLine = `- [ ] ${label}  ${muted(`run: ${command}`)}`;
   process.stdout.write(`\r\x1b[2K${pendingLine}`);
   try {
     execSync(command, { stdio: isCI ? 'inherit' : 'pipe' });
-    process.stdout.write(`\r\x1b[2K- [x] ${label}\n`);
+    process.stdout.write(`\r\x1b[2K- ${style('[x]', colors.green)} ${label}\n`);
     if (isCI) console.log('::endgroup::');
   } catch (err) {
-    process.stdout.write(`\r\x1b[2K- [!] ${label}\n`);
+    process.stdout.write(`\r\x1b[2K- ${style('[!]', colors.red)} ${label}\n`);
     if (!isCI) {
       // On local failure, rerun to show full output.
       execSync(command, { stdio: 'inherit' });
@@ -36,7 +51,7 @@ const getAffectedTargets = () => {
   return JSON.parse(output);
 };
 
-console.log(getAffectedTargets());
+// console.log(getAffectedTargets());
 
 // Each package.json has ci and ciPaths
 // ci = run all scripts as one script
@@ -50,9 +65,9 @@ const readWorkspaceMeta = (pkgPath) => {
 };
 
 const runWorkspaceTasks = (label, cwd, tasks) => {
-  console.log(`\n${label}`);
+  console.log(`\n${subheader(label)}`);
   if (!tasks?.length) {
-    console.log('- Skipping CI');
+    console.log(muted('- Skipping CI'));
     return;
   }
   for (const task of tasks) {
@@ -72,7 +87,7 @@ const {
 
 const runProjectTasks = () => {
   // Manually written to avoid triggering every project script like packages/apps do
-  console.log('Project tasks');
+  console.log(header('Project tasks'));
   step('format:check', 'pnpm run format:check');
   step('lint', 'pnpm run lint');
   step('type-check', 'pnpm run type-check');
@@ -80,66 +95,59 @@ const runProjectTasks = () => {
   step('ci:contract', 'pnpm run ci:contract');
 };
 
+const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onlyMode }) => {
+  if (!workspaceList.length) {
+    console.log(`\n${subheader(`${kindLabel} - No Change Detected`)}`);
+    console.log(muted('- Skipping CI'));
+    return;
+  }
+
+  for (const workspace of workspaceList) {
+    const pkgPath = `${baseDir}/${workspace}/package.json`;
+    const { ciTasks } = readWorkspaceMeta(pkgPath);
+    const changed = changedList.includes(workspace);
+    const suffix = changedSystems
+      ? 'Triggered From System Files Change'
+      : changed
+        ? 'Detected Change'
+        : 'No Change Detected';
+    const label = kindLabel === 'Package' ? `Package ${workspace} - ${suffix}` : `${workspace} - ${suffix}`;
+    if (!onlyMode && suffix === 'No Change Detected') {
+      console.log(`\n${subheader(label)}`);
+      console.log(muted('- Skipping CI'));
+      continue;
+    }
+    runWorkspaceTasks(label, `${baseDir}/${workspace}`, ciTasks);
+  }
+};
+
 const runPackageTasks = () => {
   const packageList = packagesOnly || changedSystems ? allPackages : changedPackages;
-
-  if (!packageList.length) {
-    console.log('\nPackage - No Change Detected');
-    console.log('- Skipping CI');
-  } else {
-    for (const pkg of packageList) {
-      const pkgPath = `packages/${pkg}/package.json`;
-      const { ciTasks } = readWorkspaceMeta(pkgPath);
-      const changed = changedPackages.includes(pkg);
-      const suffix = changedSystems
-        ? 'Triggered From System Files Change'
-        : changed
-          ? 'Detected Change'
-          : 'No Change Detected';
-      const label = pkg === 'System' ? `Package - ${suffix}` : `Package ${pkg} - ${suffix}`;
-      if (!packagesOnly && suffix === 'No Change Detected') {
-        console.log(`\n${label}`);
-        console.log('- Skipping CI');
-        continue;
-      }
-      runWorkspaceTasks(label, `packages/${pkg}`, ciTasks);
-    }
-  }
+  runWorkspaceGroup({
+    kindLabel: 'Package',
+    baseDir: 'packages',
+    workspaceList: packageList,
+    changedList: changedPackages,
+    onlyMode: packagesOnly,
+  });
 };
 
 const runAppTasks = () => {
   const appList = appsOnly || changedSystems ? allApps : changedApps;
-
-  if (!appList.length) {
-    console.log('\nApp - No Change Detected');
-    console.log('- Skipping CI');
-  } else {
-    for (const app of appList) {
-      const pkgPath = `apps/${app}/package.json`;
-      const { scripts, ciTasks } = readWorkspaceMeta(pkgPath);
-      const tasks = ciTasks ?? ['format:check', 'lint', 'type-check', 'test', 'build'].filter((t) => scripts[t]);
-      const changed = changedApps.includes(app);
-      const suffix = changedSystems
-        ? 'Triggered From System Files Change'
-        : changed
-          ? 'Detected Change'
-          : 'No Change Detected';
-      const label = `${app} - ${suffix}`;
-      if (suffix === 'No Change Detected') {
-        console.log(`\n${label}`);
-        console.log('- Skipping CI');
-        continue;
-      }
-      runWorkspaceTasks(label, `apps/${app}`, tasks);
-    }
-  }
+  runWorkspaceGroup({
+    kindLabel: 'App',
+    baseDir: 'apps',
+    workspaceList: appList,
+    changedList: changedApps,
+    onlyMode: appsOnly,
+  });
 };
 
 const getDetectedTelemetry = () => {
   const hasAppChanges = changedApps.length > 0;
   const hasPackageChanges = changedPackages.length > 0;
 
-  console.log('\nDetected Changes');
+  console.log(`\n${header('Detected Changes')}`);
   console.log(`- System files: ${changedSystems ? 'changed' : 'no change'}`);
   console.log(`- Packages: ${hasPackageChanges ? changedPackages.join(', ') : 'no change'}`);
   console.log(`- Apps: ${hasAppChanges ? changedApps.join(', ') : 'no change'}`);
@@ -149,28 +157,28 @@ const getDetectedTelemetry = () => {
   const appFiles = changedFiles.filter((file) => file.startsWith('apps/'));
 
   if (systemFiles.length) {
-    console.log('\nSystem Changed Files');
+    console.log(`\n${header('System Changed Files')}`);
     for (const file of systemFiles) {
       console.log(`- ${file}`);
     }
   }
 
   if (packageFiles.length) {
-    console.log('\nPackages Changed Files');
+    console.log(`\n${header('Packages Changed Files')}`);
     for (const file of packageFiles) {
       console.log(`- ${file}`);
     }
   }
 
   if (appFiles.length) {
-    console.log('\nApps Changed Files');
+    console.log(`\n${header('Apps Changed Files')}`);
     for (const file of appFiles) {
       console.log(`- ${file}`);
     }
   }
 
   if (!changedSystems && packageImpacts.length) {
-    console.log('\nPackage impacts');
+    console.log(`\n${header('Package impacts')}`);
     for (const impact of packageImpacts) {
       console.log(`- ${impact.package} → ${impact.apps.join(', ') || 'no dependent apps'}`);
     }
@@ -201,6 +209,6 @@ if (projectOnly) {
   runPackageTasks();
   runAppTasks();
 
-  console.log('\n Full CI check finished, exiting.\n');
+  console.log(`\n${header('Full CI check finished, exiting.')}\n`);
   process.exit(0);
 }
