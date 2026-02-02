@@ -1,18 +1,6 @@
 import { format } from '@commitlint/format';
 
-const validTypes = [
-  'feat',
-  'fix',
-  'docs',
-  'style',
-  'refactor',
-  'perf',
-  'test',
-  'build',
-  'ci',
-  'chore',
-  'revert',
-];
+const validTypes = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'];
 
 export default function formatter(report) {
   const output = format(report);

@@ -20,11 +20,7 @@ export default [
     settings: {
       'import/resolver': {
         typescript: {
-          project: [
-            './tsconfig.json',
-            './apps/frontend/tsconfig.json',
-            './apps/backend/tsconfig.json',
-          ],
+          project: ['./tsconfig.json', './apps/frontend/tsconfig.json', './apps/backend/tsconfig.json'],
         },
       },
     },
@@ -33,12 +29,7 @@ export default [
       'import/no-internal-modules': [
         'error',
         {
-          allow: [
-            '@pkg/shared-runtime/*',
-            '@pkg/shared-types/*',
-            '@app/*',
-            './**',
-          ],
+          allow: ['@pkg/shared-runtime/*', '@pkg/shared-types/*', '@app/*', './**'],
         },
       ],
       // Enforce deps listed in each workspace package.json
@@ -57,10 +48,7 @@ export default [
         },
       ],
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
 

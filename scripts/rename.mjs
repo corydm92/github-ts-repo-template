@@ -81,9 +81,7 @@ const summary = () => {
   console.log('Rename summary:');
   if (!changes.length) console.log('- No package.json changes');
   for (const change of changes) {
-    console.log(
-      `- ${change.field}: "${change.before ?? ''}" -> "${change.after ?? ''}"`,
-    );
+    console.log(`- ${change.field}: "${change.before ?? ''}" -> "${change.after ?? ''}"`);
   }
   if (readmeBefore && readmeBefore !== readmeAfter) {
     console.log('- README title updated');

@@ -25,10 +25,7 @@ const listWorkspaces = (dir, type) => {
     .filter((ws) => isDir(ws.dir) && fs.existsSync(ws.pkgPath));
 };
 
-const workspaces = [
-  ...listWorkspaces(appsDir, 'app'),
-  ...listWorkspaces(packagesDir, 'package'),
-];
+const workspaces = [...listWorkspaces(appsDir, 'app'), ...listWorkspaces(packagesDir, 'package')];
 
 const errors = [];
 
@@ -53,18 +50,11 @@ const parseCiChain = (ciScript) =>
 
 for (const ws of workspaces) {
   if (isInactive(ws.pkg)) continue;
-  const required =
-    ws.type === 'app'
-      ? ws.name === 'infra'
-        ? infraScripts
-        : appScripts
-      : packageScripts;
+  const required = ws.type === 'app' ? (ws.name === 'infra' ? infraScripts : appScripts) : packageScripts;
   const scripts = ws.pkg.scripts || {};
   for (const key of required) {
     if (!scripts[key]) {
-      errors.push(
-        `${ws.type} ${ws.name} is missing script: ${key} (set workspaceStatus: "inactive" to skip)`,
-      );
+      errors.push(`${ws.type} ${ws.name} is missing script: ${key} (set workspaceStatus: "inactive" to skip)`);
     }
   }
 
@@ -72,32 +62,22 @@ for (const ws of workspaces) {
   if (scripts.ci) {
     const ciTasks = ws.pkg.ciTasks;
     if (!Array.isArray(ciTasks) || ciTasks.length === 0) {
-      errors.push(
-        `${ws.type} ${ws.name} is missing ciTasks (required to mirror scripts.ci)`,
-      );
+      errors.push(`${ws.type} ${ws.name} is missing ciTasks (required to mirror scripts.ci)`);
     } else {
       const parsed = parseCiChain(scripts.ci);
       if (parsed.some((task) => task === null)) {
-        errors.push(
-          `${ws.type} ${ws.name} has a ci script that is not a plain "pnpm run <task>" chain`,
-        );
+        errors.push(`${ws.type} ${ws.name} has a ci script that is not a plain "pnpm run <task>" chain`);
       } else {
         const parsedTasks = parsed.filter(Boolean);
-        const matches =
-          parsedTasks.length === ciTasks.length &&
-          parsedTasks.every((task, i) => task === ciTasks[i]);
+        const matches = parsedTasks.length === ciTasks.length && parsedTasks.every((task, i) => task === ciTasks[i]);
         if (!matches) {
-          errors.push(
-            `${ws.type} ${ws.name} ciTasks must match scripts.ci in order and contents`,
-          );
+          errors.push(`${ws.type} ${ws.name} ciTasks must match scripts.ci in order and contents`);
         }
       }
 
       for (const task of ciTasks || []) {
         if (!scripts[task]) {
-          errors.push(
-            `${ws.type} ${ws.name} ciTasks references missing script: ${task}`,
-          );
+          errors.push(`${ws.type} ${ws.name} ciTasks references missing script: ${task}`);
         }
       }
     }

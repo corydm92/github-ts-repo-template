@@ -173,11 +173,7 @@ for (const file of changedFiles) {
   }
 
   // Step A: system config triggers all apps.
-  if (
-    systemPaths.some(
-      (system) => normalized === system || normalized.startsWith(system),
-    )
-  ) {
+  if (systemPaths.some((system) => normalized === system || normalized.startsWith(system))) {
     touchSystem = true;
   }
 }
