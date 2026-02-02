@@ -1,3 +1,3 @@
-import { hello } from '@pkg/shared-runtime/test';
+import { runtimeTest } from '@pkg/shared-runtime/runtime-test';
 
-export const backendHello = () => hello;
+export const backendHello = () => runtimeTest;
