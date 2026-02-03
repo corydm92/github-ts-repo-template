@@ -1,5 +1,9 @@
 # Tagging Rules
 
+## Goal
+
+Ensure production promotions are auditable and repeatable.
+
 ## Required
 
 - Use conventional commits for changelog generation
@@ -11,3 +15,8 @@
 - Tagging unreviewed commits
 - Moving tags after deploy
 - Creating tags from local-only commits
+
+## Verification
+
+- Run the release workflow and confirm a `v*` tag is created on `main`.
+- Confirm prod deploy triggers from the tag.

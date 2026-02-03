@@ -1,5 +1,9 @@
 # Artifact Promotion Rules
 
+## Goal
+
+Keep promotion deterministic and auditable across environments.
+
 ## Good
 
 - Rebuild per environment using the same inputs and rules
@@ -11,3 +15,8 @@
 - Letting build inputs drift between environments
 - Deploying from unreviewed branches
 - Skipping CI before deploy
+
+## Verification
+
+- Build inputs are identical across environments.
+- CI must pass before any deploy.

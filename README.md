@@ -13,7 +13,7 @@ A lightweight starter to jumpstart a TypeScript application with structured docs
    Start here: `/docs/blueprint/Layer 00 - System Initialization/0.2 — Project Seed`
 
 3. **Choose CI/CD for your project type** ⚙️  
-   See Layer 5.2: `/docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦`
+   See Layer 5.2: `/docs/blueprint/Layer 05 - Build & Delivery/5.2 — Trunk-Based + Feature Flag CI CD 🚦`
 
 4. **Check out Process Docs** 🧭  
    See how the project is configured and run: `/docs/process/README.md`

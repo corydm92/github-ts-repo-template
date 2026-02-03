@@ -1,5 +1,9 @@
 # Release Automation Behavior
 
+## Goal
+
+Create an auditable release commit and `v*` tag on `main` without manual tagging.
+
 ## Purpose
 
 - Generate release commit + tag on main using standard-version
@@ -19,3 +23,7 @@
 
 - No conventional commits -> version cannot be computed
 - Missing permissions -> push fails
+
+## Verification
+
+- Run release workflow and confirm tag is created on `main`.
