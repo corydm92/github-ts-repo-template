@@ -1,7 +1,9 @@
 import { execSync } from 'node:child_process';
+import { header, muted, subheader } from './run-ci.output.mjs';
+import { initRunner, runStep } from './run-ci.runner.mjs';
 
-console.clear(); // Gives runner output space
-
+// CI streams full output; local runs default to inline UI.
+// Set CI=true locally to mirror full CI-style output.
 const isCI = process.env.CI === 'true';
 const args = new Set(process.argv.slice(2));
 const projectOnly = args.has('--project-only');
@@ -9,41 +11,7 @@ const appsOnly = args.has('--apps-only');
 const packagesOnly = args.has('--packages-only');
 const forceFullCI = args.has('--force-full-ci');
 
-const colors = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  cyan: '\x1b[36m',
-};
-
-const style = (value, ...tokens) => `${tokens.join('')}${value}${colors.reset}`;
-
-const header = (value) => style(value, colors.bold, colors.cyan);
-const subheader = (value) => style(value, colors.bold);
-const muted = (value) => style(value, colors.dim);
-
-const step = (label, command) => {
-  if (isCI) {
-    console.log(`::group::${label}`);
-  }
-  const pendingLine = `- [ ] ${label}  ${muted(`run: ${command}`)}`;
-  process.stdout.write(`\r\x1b[2K${pendingLine}`);
-  try {
-    execSync(command, { stdio: isCI ? 'inherit' : 'pipe' });
-    process.stdout.write(`\r\x1b[2K- ${style('[x]', colors.green)} ${label}\n`);
-    if (isCI) console.log('::endgroup::');
-  } catch (err) {
-    process.stdout.write(`\r\x1b[2K- ${style('[!]', colors.red)} ${label}\n`);
-    if (!isCI) {
-      // On local failure, rerun to show full output.
-      execSync(command, { stdio: 'inherit' });
-    }
-    if (isCI) console.log('::endgroup::');
-    throw err;
-  }
-};
+initRunner();
 
 const getAffectedTargets = () => {
   const output = execSync('node scripts/affected-apps.mjs', {
@@ -63,14 +31,18 @@ const readWorkspaceMeta = (pkgPath) => {
   };
 };
 
-const runWorkspaceTasks = (label, cwd, tasks) => {
+const runWorkspaceTasks = async (label, cwd, tasks) => {
   console.log(`\n${subheader(label)}`);
   if (!tasks?.length) {
     console.log(muted('- Skipping CI'));
     return;
   }
   for (const task of tasks) {
-    step(task, `pnpm -C ${cwd} run ${task}`);
+    await runStep({
+      label: task,
+      command: `pnpm -C ${cwd} run ${task}`,
+      isCI,
+    });
   }
 };
 
@@ -88,17 +60,37 @@ const impactedApps = new Set(packageImpacts.flatMap((impact) => impact.apps || [
 // Merge direct + dependency-triggered app changes (Set prevents duplicates).
 const affectedApps = Array.from(new Set([...changedApps, ...impactedApps]));
 
-const runProjectTasks = () => {
+const runProjectTasks = async () => {
   // Manually written to avoid triggering every project script like packages/apps do
   console.log(header('Project Tasks'));
-  step('format:check', 'pnpm run format:check');
-  step('lint', 'pnpm run lint');
-  step('type-check', 'pnpm run type-check');
-  step('test', 'pnpm run test');
-  step('ci:contract', 'pnpm run ci:contract');
+  await runStep({
+    label: 'format:check',
+    command: 'pnpm run format:check',
+    isCI,
+  });
+  await runStep({
+    label: 'lint',
+    command: 'pnpm run lint',
+    isCI,
+  });
+  await runStep({
+    label: 'type-check',
+    command: 'pnpm run type-check',
+    isCI,
+  });
+  await runStep({
+    label: 'test',
+    command: 'pnpm run test',
+    isCI,
+  });
+  await runStep({
+    label: 'ci:contract',
+    command: 'pnpm run ci:contract',
+    isCI,
+  });
 };
 
-const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onlyMode, impactedSet }) => {
+const runWorkspaceGroup = async ({ kindLabel, baseDir, workspaceList, changedList, onlyMode, impactedSet }) => {
   if (!workspaceList.length) {
     console.log(`\n${subheader(`${kindLabel} - No Change Detected`)}`);
     console.log(muted('- Skipping CI'));
@@ -128,13 +120,14 @@ const runWorkspaceGroup = ({ kindLabel, baseDir, workspaceList, changedList, onl
       console.log(muted('- Skipping CI'));
       continue;
     }
-    runWorkspaceTasks(label, `${baseDir}/${workspace}`, ciTasks);
+
+    await runWorkspaceTasks(label, `${baseDir}/${workspace}`, ciTasks);
   }
 };
 
-const runPackageTasks = () => {
+const runPackageTasks = async () => {
   const packageList = forceFullCI || packagesOnly || changedSystems ? allPackages : changedPackages;
-  runWorkspaceGroup({
+  await runWorkspaceGroup({
     kindLabel: 'Package',
     baseDir: 'packages',
     workspaceList: packageList,
@@ -144,9 +137,9 @@ const runPackageTasks = () => {
   });
 };
 
-const runAppTasks = () => {
+const runAppTasks = async () => {
   const appList = forceFullCI || appsOnly || changedSystems ? allApps : affectedApps;
-  runWorkspaceGroup({
+  await runWorkspaceGroup({
     kindLabel: 'App',
     baseDir: 'apps',
     workspaceList: appList,
@@ -198,30 +191,34 @@ const getDetectedTelemetry = () => {
   }
 };
 
-if (projectOnly) {
-  runProjectTasks();
-  getDetectedTelemetry();
+const main = async () => {
+  if (projectOnly) {
+    await runProjectTasks();
+    getDetectedTelemetry();
 
-  console.log('\nProject only check finished, exiting.\n');
-  process.exit(0);
-} else if (packagesOnly) {
-  getDetectedTelemetry();
-  runPackageTasks();
+    console.log('\nProject only check finished, exiting.\n');
+    process.exit(0);
+  } else if (packagesOnly) {
+    getDetectedTelemetry();
+    await runPackageTasks();
 
-  console.log('\nPackage only check finished, exiting.\n');
-  process.exit(0);
-} else if (appsOnly) {
-  getDetectedTelemetry();
-  runAppTasks();
+    console.log('\nPackage only check finished, exiting.\n');
+    process.exit(0);
+  } else if (appsOnly) {
+    getDetectedTelemetry();
+    await runAppTasks();
 
-  console.log('\nApps only check finished, exiting.\n');
-  process.exit(0);
-} else {
-  runProjectTasks();
-  getDetectedTelemetry();
-  runPackageTasks();
-  runAppTasks();
+    console.log('\nApps only check finished, exiting.\n');
+    process.exit(0);
+  } else {
+    await runProjectTasks();
+    getDetectedTelemetry();
+    await runPackageTasks();
+    await runAppTasks();
 
-  console.log(`\n${header('Full CI check finished, exiting.')}\n`);
-  process.exit(0);
-}
+    console.log(`\n${header('Full CI check finished, exiting.')}\n`);
+    process.exit(0);
+  }
+};
+
+await main();
