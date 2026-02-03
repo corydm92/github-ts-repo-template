@@ -60,36 +60,6 @@ const impactedApps = new Set(packageImpacts.flatMap((impact) => impact.apps || [
 // Merge direct + dependency-triggered app changes (Set prevents duplicates).
 const affectedApps = Array.from(new Set([...changedApps, ...impactedApps]));
 
-const runProjectTasks = async () => {
-  // Manually written to avoid triggering every project script like packages/apps do
-  console.log(header('Project Tasks'));
-  await runStep({
-    label: 'format:check',
-    command: 'pnpm run format:check',
-    isCI,
-  });
-  await runStep({
-    label: 'lint',
-    command: 'pnpm run lint',
-    isCI,
-  });
-  await runStep({
-    label: 'type-check',
-    command: 'pnpm run type-check',
-    isCI,
-  });
-  await runStep({
-    label: 'test',
-    command: 'pnpm run test',
-    isCI,
-  });
-  await runStep({
-    label: 'ci:contract',
-    command: 'pnpm run ci:contract',
-    isCI,
-  });
-};
-
 const runWorkspaceGroup = async ({ kindLabel, baseDir, workspaceList, changedList, onlyMode, impactedSet }) => {
   if (!workspaceList.length) {
     console.log(`\n${subheader(`${kindLabel} - No Change Detected`)}`);
@@ -123,6 +93,53 @@ const runWorkspaceGroup = async ({ kindLabel, baseDir, workspaceList, changedLis
 
     await runWorkspaceTasks(label, `${baseDir}/${workspace}`, ciTasks);
   }
+};
+
+const runProjectTasks = async () => {
+  const shouldRunProject = isCI || forceFullCI || projectOnly || changedSystems;
+
+  const getProjectSuffix = () => {
+    if (forceFullCI) return 'Triggered From Force Full CI';
+    if (changedSystems) return 'Triggered From System Files Change';
+    if (projectOnly) return 'Triggered From Project-Only';
+    if (isCI) return 'Triggered From CI';
+    return 'No Change Detected';
+  };
+
+  const projectSuffix = getProjectSuffix();
+
+  if (!shouldRunProject) {
+    console.log(`\n${subheader(`Project - ${projectSuffix}`)}`);
+    console.log(muted('- Skipping CI'));
+    return;
+  }
+
+  console.log(subheader(`\nProject - ${projectSuffix}`));
+  await runStep({
+    label: 'format:check',
+    command: 'pnpm run format:check',
+    isCI,
+  });
+  await runStep({
+    label: 'lint',
+    command: 'pnpm run lint',
+    isCI,
+  });
+  await runStep({
+    label: 'type-check',
+    command: 'pnpm run type-check',
+    isCI,
+  });
+  await runStep({
+    label: 'test',
+    command: 'pnpm run test',
+    isCI,
+  });
+  await runStep({
+    label: 'ci:contract',
+    command: 'pnpm run ci:contract',
+    isCI,
+  });
 };
 
 const runPackageTasks = async () => {
@@ -193,8 +210,8 @@ const getDetectedTelemetry = () => {
 
 const main = async () => {
   if (projectOnly) {
-    await runProjectTasks();
     getDetectedTelemetry();
+    await runProjectTasks();
 
     console.log('\nProject only check finished, exiting.\n');
     process.exit(0);
@@ -211,8 +228,8 @@ const main = async () => {
     console.log('\nApps only check finished, exiting.\n');
     process.exit(0);
   } else {
-    await runProjectTasks();
     getDetectedTelemetry();
+    await runProjectTasks();
     await runPackageTasks();
     await runAppTasks();
 

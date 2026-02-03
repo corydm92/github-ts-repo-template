@@ -163,7 +163,7 @@ try {
   const projectOnlyOut = exec('node scripts/run-ci.mjs --project-only', tmpRoot, {
     AFFECTED_MODE: 'staged',
   });
-  expectIncludes(projectOnlyOut, 'Project Tasks');
+  expectIncludes(projectOnlyOut, 'Project - Triggered From Project-Only');
   assert.ok(!projectOnlyOut.includes('Package shared-runtime'));
 
   // Force full CI.
