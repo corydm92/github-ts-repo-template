@@ -2,6 +2,10 @@
 
 Deployment standards for this section.
 
+## Goal
+
+Provide a single, deterministic CI/CD contract for trunk-based delivery with required feature flags.
+
 ## CI gate (non-negotiable)
 
 - Runs on pull_request (all branches).
@@ -9,10 +13,15 @@ Deployment standards for this section.
 - Steps run in order: format:check, lint (no warnings), type-check, test.
 - Any failure blocks the workflow.
 
-## Trunk-Based CD (how each deploy is triggered)
+## Trunk-Based + Feature Flag CD (how each deploy is triggered)
 
 - Merge to main → dev deploy
 - v\* tag on a main commit → prod deploy
+
+## Feature Flags (required for trunk-based releases)
+
+- All production-impacting changes must ship behind a feature flag.
+- Flags are the safety valve that enables trunk-based merges without blocking release cadence.
 
 ## Vercel CD (web apps)
 
@@ -41,3 +50,9 @@ Deployment standards for this section.
 ## Release automation
 
 - Release workflow creates a release commit and `v*` tag on main.
+
+## Verification
+
+- Open a PR and confirm CI runs all gates.
+- Merge to `main` and confirm dev deploy.
+- Run release automation and confirm `v*` tag triggers prod deploy.

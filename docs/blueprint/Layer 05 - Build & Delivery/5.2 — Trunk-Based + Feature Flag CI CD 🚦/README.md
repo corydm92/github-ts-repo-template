@@ -1,8 +1,8 @@
-# 5.2 — CI/CD with Docker, Vercel, and npm
+# 5.2 — Trunk-Based + Feature Flag CI/CD with Docker, Vercel, and npm
 
 Updated by Cory Morrissey: 1/29/2026
 
-This section defines a **single, deterministic CI/CD path** for projects that deploy via:
+This section defines a **single, deterministic CI/CD path** for projects that deploy via trunk-based delivery with required feature flags:
 
 - Vercel (web apps)
 - Docker/containers (services)
@@ -14,6 +14,7 @@ The goal is consistency: rebuild per environment using deterministic inputs, and
 
 - A baseline CI gate (format, lint, type-check, test)
 - Trunk-based CD triggers per environment
+- Required feature flag rules for trunk-based releases
 - Deterministic rebuild rules (build per environment without drift)
 - Release tagging for production
 - Release automation workflow

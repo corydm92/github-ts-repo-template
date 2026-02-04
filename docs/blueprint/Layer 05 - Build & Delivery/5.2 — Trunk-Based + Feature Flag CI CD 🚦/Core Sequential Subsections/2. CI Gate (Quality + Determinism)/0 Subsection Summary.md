@@ -10,3 +10,12 @@ Required order:
 4. test
 
 If any step fails, deployment must not proceed.
+
+## Goal
+
+Ensure every change is validated before merge or release.
+
+## Verification
+
+- CI runs on every PR.
+- Any failing step blocks merge.

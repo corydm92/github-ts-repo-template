@@ -1,15 +1,24 @@
-# 🚦 CI/CD with Docker, Vercel, and npm — Trunk-Based Deployment Flow (Dev + Prod)
+# 🚦 Trunk-Based + Feature Flag CI/CD Deployment Flow (Docker/Vercel/npm)
 
 Updated by Cory Morrissey: 1/29/2026
 
-This note describes the human flow from a fix on a feature branch to production using trunk-based delivery and feature flags.
+This note describes the human flow from a fix on a feature branch to production using trunk-based delivery and required feature flags.
+
+## Goal
+
+Provide a consistent, human-readable path from fix → merge → release for any deploy target.
+
+## Non-negotiable rules
+
+- Feature flags are required for production-impacting changes.
+- Exactly one CD path is active per project.
 
 - **Path A (Web Apps)**: CI + Vercel CD 🌐
 - **Path B (Services)**: CI + Docker CD 🐳
 - **Path C (Libraries)**: CI + npm CD 📦
 
 Templates live in:
-`docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
+`docs/blueprint/Layer 05 - Build & Delivery/5.2 — Trunk-Based + Feature Flag CI CD 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 
 Rule: **Only one CD path should be active** in a given project.
 

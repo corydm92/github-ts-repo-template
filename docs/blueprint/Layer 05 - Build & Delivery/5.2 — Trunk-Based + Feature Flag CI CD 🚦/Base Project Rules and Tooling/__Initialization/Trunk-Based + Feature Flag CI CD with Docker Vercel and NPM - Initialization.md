@@ -1,8 +1,8 @@
-# CI/CD with Docker, Vercel, and npm — Initialization
+# Trunk-Based + Feature Flag CI/CD with Docker, Vercel, and npm — Initialization
 
 Updated by Cory Morrissey: 1/29/2026
 
-This setup path wires **one** trunk-based CI/CD pipeline (Vercel, Docker, or npm) and keeps builds deterministic and repeatable.
+This setup path wires **one** trunk-based CI/CD pipeline (Vercel, Docker, or npm) with required feature flags and keeps builds deterministic and repeatable.
 
 ## 🎯 Goal
 
@@ -10,6 +10,7 @@ Ship a project with:
 
 - CI gating on PRs (all branches).
 - Trunk-based CD for a single deploy target.
+- Feature flags required for production-impacting changes.
 - Rebuild per environment using deterministic inputs to avoid drift.
 - Release automation for commit and tag creation.
 
@@ -52,7 +53,7 @@ Verify:
 Pick **one** CD workflow and copy it into `.github/workflows`:
 
 - Templates live here:
-  - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — CI CD with Docker Vercel and NPM 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
+  - `docs/blueprint/Layer 05 - Build & Delivery/5.2 — Trunk-Based + Feature Flag CI CD 🚦/Base Project Rules and Tooling/__Initialization/workflows/`
 - Choose one:
   - Web apps: `cd-vercel-trunk-based.yml`
   - Services: `cd-docker-trunk-based.yml`

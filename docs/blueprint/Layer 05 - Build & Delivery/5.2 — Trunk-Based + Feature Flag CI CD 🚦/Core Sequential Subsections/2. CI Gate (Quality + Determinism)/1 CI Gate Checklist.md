@@ -1,5 +1,14 @@
 # CI Gate Checklist
 
+## Goal
+
+Guarantee deterministic, non-negotiable quality checks before any merge or release.
+
+## Preconditions
+
+- `packageManager` is set in `package.json`.
+- Corepack is enabled in CI.
+
 ## Required
 
 - Deterministic Node + pnpm (via packageManager and Corepack)
@@ -19,3 +28,8 @@
 - Skip CI for hotfixes
 - Auto-fix formatting in CI
 - Publish artifacts from a failed gate
+
+## Verification
+
+- Open a PR and confirm CI runs all required steps.
+- Introduce a formatting error and confirm CI fails.
